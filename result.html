@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Race Result</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #282c34;
+        color: white;
+        text-align: center;
+      }
+      img {
+        width: auto;
+        height: 500px;
+        margin-bottom: 20px;
+      }
+      .button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <img id="opponentImage" src="" alt="Opponent Image" />
+    <h1 id="resultText"></h1>
+    <p id="quoteText"></p>
+    <button class="button" id="restartButton">Restart Race</button>
+
+    <script>
+      const params = new URLSearchParams(window.location.search);
+      const winner = params.get("winner");
+      const quote = params.get("quote");
+      const opponentImage = params.get("image");
+
+      document.getElementById("opponentImage").src = opponentImage;
+      document.getElementById("resultText").innerText =
+        winner === "true" ? "You Win!" : "You Lose!";
+      document.getElementById("quoteText").innerText =
+        winner === "false" ? quote : "";
+
+      document.getElementById("restartButton").onclick = function () {
+        window.location.href = "game.html"; // Change to your main HTML file
+      };
+    </script>
+  </body>
+</html>
