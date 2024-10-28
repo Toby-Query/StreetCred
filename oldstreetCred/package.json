@@ -1,5 +1,5 @@
 {
-  "name": "final",
+  "name": "car-game",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,10 +9,12 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "vite": "^5.4.9"
+    "vite": "^5.4.8"
   },
   "dependencies": {
     "cannon-es": "^0.20.0",
-    "cannon-es-debugger": "^1.0.0"
+    "cannon-es-debugger": "^1.0.0",
+    "dat.gui": "^0.7.9",
+    "three": "^0.169.0"
   }
 }

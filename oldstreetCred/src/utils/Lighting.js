@@ -37,7 +37,7 @@ export function setupLighting(scene) {
   const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.5); // Sky color, ground color, intensity
   scene.add(hemiLight);
 
-  // dat.GUI for interactive controls
+  //dat.GUI for interactive controls
   //   const gui = new GUI();
   //   const lightFolder = gui.addFolder("Directional Light");
   //   lightFolder.add(directionalLight.position, "x", -200, 200).name("Light X");

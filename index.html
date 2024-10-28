@@ -3,23 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cover Page</title>
-    <link rel="stylesheet" href="styles.css" />
+    <title>Three.js & Cannon.js Car Simulation</title>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
   </head>
   <body>
-    <div class="cover-page">
-      <div>
-        <h1 class="game-title">Street Cred</h1>
-      </div>
+    <!-- Canvas element for the Three.js scene -->
+    <canvas class="webgl"></canvas>
 
-      <p class="start-text">Press any key to start</p>
-    </div>
-
-    <script>
-      // When any key is pressed, redirect to the game page
-      window.addEventListener("keydown", () => {
-        window.location.href = "menu.html"; // Redirect to game.html
-      });
-    </script>
+    <!-- Import the compiled JavaScript file -->
+    <script src="/src/main.js" type="module"></script>
   </body>
 </html>
