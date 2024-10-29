@@ -11,6 +11,16 @@
       }
       canvas {
         display: block;
+        margin: 0 auto;
+      }
+      #speedometer {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 15%;
+        aspect-ratio: 1/1;
+        margin: 5%;
+        z-index: 1;
       }
     </style>
   </head>
@@ -18,7 +28,10 @@
     <!-- Canvas element for the Three.js scene -->
     <canvas class="webgl"></canvas>
 
+    <canvas id="speedometer"></canvas>
+
     <!-- Import the compiled JavaScript file -->
+    <!-- <script src="/src/speedometer.js"></script> -->
     <script src="/src/main.js" type="module"></script>
   </body>
 </html>

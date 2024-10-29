@@ -11,6 +11,7 @@ import stats from "./stats";
 import Car from "./world/car";
 import { FollowCamera } from "./followCamera"; // Import FollowCamera
 import * as CANNON from "cannon-es";
+import { drawSpeedo } from "./speedometer.js";
 
 // Canvas and Scene
 const canvas = document.querySelector("canvas.webgl");
@@ -65,7 +66,7 @@ scene.add(dummyMesh);
 // Create a Cannon.js box with the same dimensions
 const shape = new CANNON.Box(new CANNON.Vec3(1, 2, 1)); // Half-extents are half the dimensions
 const boxBody = new CANNON.Body({
-  mass: 1, // Set mass as needed; 0 means it will be static
+  mass: 5000, // Set mass as needed; 0 means it will be static
 });
 boxBody.addShape(shape);
 dummyMesh.position.set(0, 50, 100);
@@ -90,6 +91,12 @@ const tick = () => {
   const dt = lastCallTime ? time - lastCallTime : timeStep;
   world.step(timeStep, dt);
   lastCallTime = time;
+
+  // Retrieve car speed and update speedometer
+  const carSpeed = car.getSpeed(); // Assume car.getSpeed() returns speed value
+  const carGear = car.getGear(); // Assume car.getGear() returns current gear
+  const carRpm = car.getRpm(); // Assume car.getRpm() returns RPM value
+  drawSpeedo(carSpeed, carGear, carRpm, 160, car.isReverse); // Update speedometer display
 
   // Car position and quaternion
   const carPosition = new THREE.Vector3(
