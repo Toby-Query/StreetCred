@@ -69,6 +69,7 @@ export default class Car {
   init() {
     this.loadModels();
     this.setChassis();
+    this.setInitialPosition({ x: -2, y: 2, z: 0 }, { x: 0, y: 0, z: 0 }); // Set initial position here
     this.setWheels();
     this.controls();
     this.update();
@@ -217,6 +218,23 @@ export default class Car {
         // this.wheels[index].wheelBody = wheelBody;
       }.bind(this)
     );
+  }
+
+  setInitialPosition(
+    position = { x: 0, y: 4, z: 0 },
+    rotation = { x: 0, y: 0, z: 0 }
+  ) {
+    // Set initial position
+    this.car.chassisBody.position.set(position.x, position.y, position.z);
+
+    // Set initial rotation
+    const quaternion = new CANNON.Quaternion();
+    quaternion.setFromEuler(rotation.x, rotation.y, rotation.z);
+    this.car.chassisBody.quaternion.copy(quaternion);
+
+    // Reset any existing velocity
+    this.car.chassisBody.velocity.set(0, 0, 0);
+    this.car.chassisBody.angularVelocity.set(0, 0, 0);
   }
 
   controls() {

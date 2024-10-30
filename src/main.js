@@ -8,7 +8,8 @@ import { loadCubeTextures } from "./textures";
 import { initPhysics } from "./physics";
 import { setupFloor } from "./floor.js";
 import stats from "./stats";
-import Car from "./world/car";
+import Car from "./cars/car.js";
+import Car2 from "./cars/car2.js";
 import { FollowCamera } from "./followCamera"; // Import FollowCamera
 import * as CANNON from "cannon-es";
 import { drawSpeedo } from "./speedometer.js";
@@ -38,6 +39,11 @@ const { world } = initPhysics(scene);
 // Car
 const car = new Car(scene, world);
 car.init();
+
+// Car2
+const car2 = new Car2(scene, world);
+car2.setTarget({ x: 0, y: 0, z: 50 });
+car2.init();
 
 // Lighting
 setupLights(scene);

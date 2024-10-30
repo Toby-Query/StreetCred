@@ -76,7 +76,7 @@ export function drawSpeedo(
   topSpeed = 160,
   isReverse = false
 ) {
-  console.log(isReverse);
+  //console.log(isReverse);
   ctx.clearRect(0, 0, 500, 500);
 
   ctx.beginPath();
