@@ -42,7 +42,7 @@ car.init();
 
 // Car2
 const car2 = new Car2(scene, world);
-car2.setTarget({ x: 0, y: 0, z: 50 });
+car2.setTarget({ x: -50, y: 0, z: 50 });
 car2.init();
 
 // Lighting

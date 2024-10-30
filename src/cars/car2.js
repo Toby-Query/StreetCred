@@ -26,7 +26,7 @@ export default class Car2 {
     this.loadModels();
     this.setupChassis();
     this.setInitialPosition({ x: 2, y: 2, z: 0 }, { x: 0, y: 0, z: 0 });
-    this.setupWheels();
+    this.setWheels();
     this.update();
   }
 
@@ -42,10 +42,23 @@ export default class Car2 {
       this.scene.add(this.chassis);
     });
 
+    this.wheels = [];
     for (let i = 0; i < 4; i++) {
       gltfLoader.load("./car/wheel.gltf", (gltf) => {
         const wheelModel = gltf.scene;
-        this.wheels.push(wheelModel);
+        this.wheels[i] = wheelModel;
+        if (i === 1 || i === 3)
+          this.wheels[i].scale.set(
+            -1 * this.wheelScale.frontWheel,
+            1 * this.wheelScale.frontWheel,
+            -1 * this.wheelScale.frontWheel
+          );
+        else
+          this.wheels[i].scale.set(
+            1 * this.wheelScale.frontWheel,
+            1 * this.wheelScale.frontWheel,
+            1 * this.wheelScale.frontWheel
+          );
         this.scene.add(wheelModel);
       });
     }
@@ -74,8 +87,9 @@ export default class Car2 {
     this.car.addToWorld(this.world);
   }
 
-  setupWheels() {
-    const wheelOptions = {
+  setWheels() {
+    this.car.wheelInfos = [];
+    this.car.addWheel({
       radius: 0.34,
       directionLocal: new CANNON.Vec3(0, -1, 0),
       suspensionStiffness: 55,
@@ -86,64 +100,145 @@ export default class Car2 {
       maxSuspensionForce: 10000,
       rollInfluence: 0.01,
       axleLocal: new CANNON.Vec3(-1, 0, 0),
+      chassisConnectionPointLocal: new CANNON.Vec3(0.75, 0.1, -1.32),
       maxSuspensionTravel: 1,
       customSlidingRotationalSpeed: 30,
-    };
-
-    // Positions for wheels on each corner
-    const wheelPositions = [
-      new CANNON.Vec3(0.75, 0.1, -1.32), // Front right
-      new CANNON.Vec3(-0.78, 0.1, -1.32), // Front left
-      new CANNON.Vec3(0.75, 0.1, 1.25), // Back right
-      new CANNON.Vec3(-0.78, 0.1, 1.25), // Back left
-    ];
-
-    // Add each wheel to CANNON vehicle
-    wheelPositions.forEach((position) => {
-      this.car.addWheel({
-        ...wheelOptions,
-        chassisConnectionPointLocal: position,
-      });
     });
-  }
+    this.car.addWheel({
+      radius: 0.34,
+      directionLocal: new CANNON.Vec3(0, -1, 0),
+      suspensionStiffness: 55,
+      suspensionRestLength: 0.5,
+      frictionSlip: 30,
+      dampingRelaxation: 2.3,
+      dampingCompression: 4.3,
+      maxSuspensionForce: 10000,
+      rollInfluence: 0.01,
+      axleLocal: new CANNON.Vec3(-1, 0, 0),
+      chassisConnectionPointLocal: new CANNON.Vec3(-0.78, 0.1, -1.32),
+      maxSuspensionTravel: 1,
+      customSlidingRotationalSpeed: 30,
+    });
+    this.car.addWheel({
+      radius: 0.34,
+      directionLocal: new CANNON.Vec3(0, -1, 0),
+      suspensionStiffness: 55,
+      suspensionRestLength: 0.5,
+      frictionSlip: 30,
+      dampingRelaxation: 2.3,
+      dampingCompression: 4.3,
+      maxSuspensionForce: 10000,
+      rollInfluence: 0.01,
+      axleLocal: new CANNON.Vec3(-1, 0, 0),
+      chassisConnectionPointLocal: new CANNON.Vec3(0.75, 0.1, 1.25),
+      maxSuspensionTravel: 1,
+      customSlidingRotationalSpeed: 30,
+    });
+    this.car.addWheel({
+      radius: 0.34,
+      directionLocal: new CANNON.Vec3(0, -1, 0),
+      suspensionStiffness: 55,
+      suspensionRestLength: 0.5,
+      frictionSlip: 30,
+      dampingRelaxation: 2.3,
+      dampingCompression: 4.3,
+      maxSuspensionForce: 10000,
+      rollInfluence: 0.01,
+      axleLocal: new CANNON.Vec3(-1, 0, 0),
+      chassisConnectionPointLocal: new CANNON.Vec3(-0.78, 0.1, 1.25),
+      maxSuspensionTravel: 1,
+      customSlidingRotationalSpeed: 30,
+    });
 
+    this.car.wheelInfos.forEach(
+      function (wheel, index) {
+        const cylinderShape = new CANNON.Cylinder(
+          wheel.radius,
+          wheel.radius,
+          wheel.radius / 2,
+          20
+        );
+        const wheelBody = new CANNON.Body({
+          mass: 1,
+          material: new CANNON.Material({ friction: 0 }),
+        });
+        const quaternion = new CANNON.Quaternion().setFromEuler(
+          -Math.PI / 2,
+          0,
+          0
+        );
+        wheelBody.addShape(cylinderShape, new CANNON.Vec3(), quaternion);
+        // this.wheels[index].wheelBody = wheelBody;
+      }.bind(this)
+    );
+  }
   // AI movement control towards target
   driveToTarget() {
     if (!this.targetPosition) return;
 
     const maxForce = 750;
     const maxSteerVal = 0.5;
+    const steeringDamping = 0.1; // Added damping factor to smooth steering
+    const angleThreshold = 0.1; // Minimum angle before steering is applied
+    const targetThreshold = 50; // Distance threshold for slowing down
+    const brakeForce = 36;
 
+    // Calculate direction to target
     const direction = new CANNON.Vec3()
       .copy(this.targetPosition)
       .vsub(this.car.chassisBody.position);
     const distance = direction.length();
     direction.normalize();
 
+    const brake = () => {
+      this.car.setBrake(brakeForce, 0);
+      this.car.setBrake(brakeForce, 1);
+      this.car.setBrake(brakeForce, 2);
+      this.car.setBrake(brakeForce, 3);
+    };
+
+    if (distance < 17) {
+      brake();
+      return;
+    }
+
+    console.log(this.car.chassisBody.position);
+
+    // Get car's forward vector
     const carForward = this.car.chassisBody.quaternion.vmult(
       new CANNON.Vec3(0, 0, -1)
     );
+
+    // Calculate angle between car's forward direction and target direction
     const dotProduct = direction.dot(carForward);
     const angleToTarget = Math.acos(Math.max(-1, Math.min(1, dotProduct)));
 
-    const steerValue =
-      (direction.cross(carForward).y > 0 ? 1 : -1) *
-      maxSteerVal *
-      Math.min(1, angleToTarget / Math.PI);
+    // Calculate steering with damping and threshold
+    let steerValue = 0;
+    if (Math.abs(angleToTarget) > angleThreshold) {
+      const crossProduct = direction.cross(carForward);
+      const steerDirection = Math.sign(crossProduct.y);
+      steerValue =
+        steerDirection *
+        maxSteerVal *
+        Math.min(1, angleToTarget / Math.PI) *
+        steeringDamping;
+    }
 
-    this.car.setSteeringValue(steerValue, 2); // Front left wheel
-    this.car.setSteeringValue(steerValue, 3); // Front right wheel
+    // Apply steering more smoothly
+    this.car.setSteeringValue(steerValue, 2);
+    this.car.setSteeringValue(steerValue, 3);
 
-    if (distance > 1) {
-      this.car.applyEngineForce(-maxForce, 0);
-      this.car.applyEngineForce(-maxForce, 1);
-      this.car.applyEngineForce(-maxForce, 2);
-      this.car.applyEngineForce(-maxForce, 3);
-    } else {
-      this.car.applyEngineForce(0, 0);
-      this.car.applyEngineForce(0, 1);
-      this.car.applyEngineForce(0, 2);
-      this.car.applyEngineForce(0, 3);
+    // Apply engine force with gradual slowdown
+    let engineForce = -maxForce;
+    if (distance < targetThreshold) {
+      // Gradually reduce force as we get closer to target
+      engineForce *= Math.max(0, (distance - 0.5) / targetThreshold);
+    }
+
+    // Apply engine force to all wheels
+    for (let i = 0; i < 4; i++) {
+      this.car.applyEngineForce(engineForce, i);
     }
   }
 
@@ -181,6 +276,9 @@ export default class Car2 {
             // Positioning and rotating wheels
             this.wheels[i].position.copy(
               this.car.wheelInfos[i].worldTransform.position
+            );
+            this.wheels[i].quaternion.copy(
+              this.car.wheelInfos[i].worldTransform.quaternion
             );
 
             // Adjust quaternion to align with the wheel's axis
