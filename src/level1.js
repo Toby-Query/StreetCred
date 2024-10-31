@@ -13,7 +13,7 @@ import Car2 from "./cars/car2.js";
 import { FollowCamera } from "./setup/followCamera.js"; // Import FollowCamera
 import * as CANNON from "cannon-es";
 import { drawSpeedo } from "./gameScreenUI/speedometer.js";
-import { startCountdown } from "./gameScreenUI/timer.js";
+import { preRaceCountdown, startCountdown } from "./gameScreenUI/timer.js";
 
 // Canvas and Scene
 const canvas = document.querySelector("canvas.webgl");
@@ -63,26 +63,10 @@ const timeStep = 1 / 60; // seconds
 let lastCallTime;
 
 // Usage example: Create a few boxes with varying sizes, colors, masses, and positions
-// const box1 = createBox({
-//   size: [2, 4, 2],
-//   color: 0xff0000,
-//   mass: 5000,
-//   position: [0, 50, 100],
-//   scene: scene,
-//   world: world,
-// });
-// const box2 = createBox({
-//   size: [1, 2, 1],
-//   color: 0x0000ff,
-//   mass: 1000,
-//   position: [10, 50, 100],
-//   scene: scene,
-//   world: world,
-// });
 const box3 = createBox({
   size: [1, 6, 210],
   color: 0x00ff00,
-  mass: 8000,
+  mass: 0,
   position: [-5, 3, 105],
   scene: scene,
   world: world,
@@ -200,7 +184,11 @@ const goalBox = createGoalBox({
 });
 
 const countdownElement = document.getElementById("countdown");
-startCountdown(50, countdownElement);
+// Call this function at the start to initiate countdown
+preRaceCountdown(5, () => {
+  // Start main race timer after countdown completes
+  startCountdown(25, countdownElement);
+});
 
 // Function to check if car is within the goal box
 function checkGoal(carPosition, goalBox) {
@@ -219,7 +207,7 @@ function checkGoal(carPosition, goalBox) {
   ) {
     // Trigger end of game
     console.log("Goal reached! Race is over.");
-    window.location.href = "../goal.html";
+    window.location.href = "../win.html";
     // Add more actions here, like displaying an end screen or stopping the car
   }
 }
