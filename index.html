@@ -3,54 +3,53 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Three.js & Cannon.js Car Simulation</title>
+    <title>Level Selection Menu</title>
     <style>
+      /* Basic styling for the menu */
       body {
-        margin: 0;
-        overflow: hidden;
-      }
-      canvas {
-        display: block;
-        margin: 0 auto;
-      }
-      #speedometer {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        width: 15%;
-        aspect-ratio: 1/1;
-        margin: 5%;
-        z-index: 1;
-      }
-
-      #countdown {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        margin: 5%;
-        width: 15%;
-        aspect-ratio: 1/1;
         display: flex;
         justify-content: center;
         align-items: center;
-        font-size: 6rem;
-        background-color: rgba(0, 0, 0, 0.5);
-        border-radius: 50%;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+        font-family: Arial, sans-serif;
+      }
+      .menu {
+        text-align: center;
+      }
+      .menu button {
+        display: block;
+        margin: 10px auto;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+        border: none;
+        background-color: #4caf50;
+        color: white;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+      }
+      .menu button:hover {
+        background-color: #45a049;
       }
     </style>
-    <link rel="stylesheet" href="src/timer.css" />
   </head>
   <body>
-    <!-- Canvas element for the Three.js scene -->
-    <canvas class="webgl"></canvas>
+    <div class="menu">
+      <h1>Select Level</h1>
+      <button onclick="redirectToLevel()">Level 1</button>
+      <button onclick="redirectToLevel()">Level 2</button>
+      <button onclick="redirectToLevel()">Level 3</button>
+      <button onclick="redirectToLevel()">Level 4</button>
+      <button onclick="redirectToLevel()">Level 5</button>
+    </div>
 
-    <canvas id="speedometer"></canvas>
-
-    <!-- HTML Element to display the countdown -->
-    <div id="countdown"></div>
-
-    <!-- Import the compiled JavaScript file -->
-    <!-- <script src="/src/speedometer.js"></script> -->
-    <script src="/src/main.js" type="module"></script>
+    <script>
+      // JavaScript function to redirect to level1.html
+      function redirectToLevel() {
+        window.location.href = "level1.html";
+      }
+    </script>
   </body>
 </html>
