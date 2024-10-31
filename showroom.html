@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Car Viewer</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+        #speedometer {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 200px;
+            height: 150px;
+            z-index: 10; /* Ensure it stays on top */
+        }
+    </style>
+</head>
+<body>
+    <script src="src/showroom/main.js" type="module"></script>
+    <canvas id="speedometer"></canvas>
+    
+</body>
+</html>
