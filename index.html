@@ -22,13 +22,32 @@
         margin: 5%;
         z-index: 1;
       }
+
+      #countdown {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        margin: 5%;
+        width: 15%;
+        aspect-ratio: 1/1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 6rem;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-radius: 50%;
+      }
     </style>
+    <link rel="stylesheet" href="src/timer.css" />
   </head>
   <body>
     <!-- Canvas element for the Three.js scene -->
     <canvas class="webgl"></canvas>
 
     <canvas id="speedometer"></canvas>
+
+    <!-- HTML Element to display the countdown -->
+    <div id="countdown"></div>
 
     <!-- Import the compiled JavaScript file -->
     <!-- <script src="/src/speedometer.js"></script> -->
