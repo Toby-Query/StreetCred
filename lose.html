@@ -7,6 +7,7 @@
     <style>
       body {
         display: flex;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         height: 100vh;
@@ -19,11 +20,34 @@
       h1 {
         font-size: 3em;
         text-align: center;
-        color: #00ff00; /* Green color for a winning effect */
+        color: #ff0000; /* Red color for a losing effect */
+      }
+
+      button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        font-size: 1.5em;
+        color: #ffffff;
+        background-color: #007bff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+
+      button:hover {
+        background-color: #0056b3;
       }
     </style>
   </head>
   <body>
     <h1>You Lose!</h1>
+    <button onclick="restartGame()">Restart</button>
+
+    <script>
+      function restartGame() {
+        window.location.href = "level1.html";
+      }
+    </script>
   </body>
 </html>

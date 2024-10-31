@@ -3,6 +3,7 @@ import * as CANNON from "cannon-es";
 import { matchStarted } from "../gameScreenUI/timer";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
+import { preloadAudio, playAudio, pauseAudio } from "../setup/audioLoader";
 
 export default class Car {
   constructor(scene, world) {
@@ -27,6 +28,11 @@ export default class Car {
       hindWheel: 0.67,
     };
     this.mass = 250;
+    this.accelerateSource = null;
+    this.isAcceleratePlaying = false;
+
+    this.brakeSource = null;
+    this.isBrakePlaying = false;
   }
 
   // Method to get current speed in miles per hour
@@ -66,11 +72,16 @@ export default class Car {
     return this.engineRpm / 1000;
   }
 
-  init() {
+  async init() {
     this.loadModels();
     this.setChassis();
     this.setInitialPosition({ x: -2, y: 2, z: 30 }, { x: 0, y: 0, z: 0 }); // Set initial position here
     this.setWheels();
+
+    await preloadAudio().then(() => {
+      console.log("Audio loaded and ready to play.");
+    });
+
     this.controls();
     this.update();
   }
@@ -256,7 +267,7 @@ export default class Car {
     this.car.chassisBody.angularVelocity.set(0, 0, 0);
   }
 
-  controls() {
+  async controls() {
     const maxSteerVal = 0.5;
     const maxForce = 750;
     const brakeForce = 36;
@@ -277,10 +288,39 @@ export default class Car {
       hindMovement();
     });
 
+    const playEngineSound = () => {
+      if (!this.isAcceleratePlaying) {
+        this.accelerateSource = playAudio("accelerate");
+        this.isAcceleratePlaying = true;
+      }
+    };
+
+    const pauseEngineSound = () => {
+      if (this.isAcceleratePlaying) {
+        pauseAudio(this.accelerateSource);
+        this.isAcceleratePlaying = false;
+      }
+    };
+
+    const playBrakeSound = () => {
+      if (!this.isBrakePlaying) {
+        this.brakeSource = playAudio("brake");
+        this.isBrakePlaying = true;
+      }
+    };
+
+    const pauseBrakeSound = () => {
+      if (this.isBrakePlaying) {
+        pauseAudio(this.brakeSource);
+        this.isBrakePlaying = false;
+      }
+    };
+
     const hindMovement = () => {
       if (keysPressed.includes("r") || keysPressed.includes("r")) resetCar();
 
       if (!keysPressed.includes(" ") && !keysPressed.includes(" ")) {
+        pauseBrakeSound();
         this.car.setBrake(0, 0);
         this.car.setBrake(0, 1);
         this.car.setBrake(0, 2);
@@ -299,6 +339,7 @@ export default class Car {
           } else stopSteer();
 
           if (keysPressed.includes("w") || keysPressed.includes("arrowup")) {
+            playEngineSound();
             this.isReverse = false;
             this.car.applyEngineForce(maxForce * -1, 0);
             this.car.applyEngineForce(maxForce * -1, 1);
@@ -308,13 +349,21 @@ export default class Car {
             keysPressed.includes("s") ||
             keysPressed.includes("arrowdown")
           ) {
+            pauseEngineSound();
             this.isReverse = true;
             this.car.applyEngineForce(maxForce * 1, 0);
             this.car.applyEngineForce(maxForce * 1, 1);
             this.car.applyEngineForce(maxForce * 1, 2);
             this.car.applyEngineForce(maxForce * 1, 3);
-          } else stopCar();
-        } else brake();
+          } else {
+            pauseEngineSound();
+            stopCar();
+          }
+        }
+      } else {
+        pauseEngineSound();
+        playBrakeSound();
+        brake();
       }
     };
 

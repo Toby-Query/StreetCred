@@ -1,5 +1,7 @@
 // countdown.js
 
+import { playAudio, preloadAudio } from "../setup/audioLoader";
+
 export let matchStarted = false;
 
 function startMatch() {
@@ -34,7 +36,7 @@ export function startCountdown(seconds, displayElement) {
   updateDisplay(); // Start the countdown
 }
 
-export function preRaceCountdown(duration, onComplete) {
+export async function preRaceCountdown(duration, onComplete) {
   const overlay = document.getElementById("countdown-overlay");
   overlay.style.display = "flex"; // Show the overlay
 
@@ -43,6 +45,14 @@ export function preRaceCountdown(duration, onComplete) {
 
   // Disable controls during countdown
   //controls.enabled = false;
+
+  // Preload all audio files
+  await preloadAudio().then(() => {
+    console.log("Audio loaded and ready to play.");
+  });
+
+  // Example: Play audio1
+  const source = playAudio("engine");
 
   const interval = setInterval(() => {
     countdown--;
