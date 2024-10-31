@@ -224,6 +224,18 @@ function checkGoal(carPosition, goalBox) {
   }
 }
 
+let isEditMode = false;
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "e") {
+    isEditMode = true; // Enter edit mode
+    controls.enabled = true; // Enable orbit or other controls for editing
+  } else if (event.key === "p") {
+    isEditMode = false; // Enter play mode
+    controls.enabled = false; // Disable editing controls in play mode
+  }
+});
+
 const tick = () => {
   stats.begin();
   controls.update();
@@ -256,7 +268,9 @@ const tick = () => {
     car.car.chassisBody.quaternion.w
   );
 
-  followCamera.update(carPosition, carQuaternion);
+  if (!isEditMode) {
+    followCamera.update(carPosition, carQuaternion);
+  }
 
   renderer.render(scene, camera);
   stats.end();
