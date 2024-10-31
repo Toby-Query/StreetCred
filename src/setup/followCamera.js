@@ -13,7 +13,8 @@ export class FollowCamera {
     const cameraPosition = carPosition.clone().add(worldOffset);
 
     // Smoothly transition the camera to the calculated position
-    this.camera.position.lerp(cameraPosition, 0.1);
+    //this.camera.position.lerp(cameraPosition, 0.1);
+    this.camera.position.set(cameraPosition.x,cameraPosition.y,cameraPosition.z);
     this.camera.lookAt(carPosition);
   }
 }
