@@ -339,7 +339,7 @@ export default class Car {
           } else stopSteer();
 
           if (keysPressed.includes("w") || keysPressed.includes("arrowup")) {
-            playEngineSound();
+            if (this.getSpeed() > 50) playEngineSound();
             this.isReverse = false;
             this.car.applyEngineForce(maxForce * -1, 0);
             this.car.applyEngineForce(maxForce * -1, 1);
