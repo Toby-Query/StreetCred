@@ -4,7 +4,7 @@ import * as CANNON from "cannon-es";
 export function setupFloor(scene, world) {
   //width and height
   const width = 10;
-  const height = 100;
+  const height = 200;
 
   const floorGeo = new THREE.PlaneGeometry(width, height);
   const floorMesh = new THREE.Mesh(
