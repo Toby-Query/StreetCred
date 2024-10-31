@@ -38,17 +38,26 @@
   <body>
     <div class="menu">
       <h1>Select Level</h1>
-      <button onclick="redirectToLevel()">Level 1</button>
-      <button onclick="redirectToLevel()">Level 2</button>
-      <button onclick="redirectToLevel()">Level 3</button>
-      <button onclick="redirectToLevel()">Level 4</button>
-      <button onclick="redirectToLevel()">Level 5</button>
+      <button onclick="redirectToLevel1()">Level 1</button>
+      <button onclick="redirectToLevel2()">Level 2</button>
+      <button onclick="redirectToLevel3()">Level 3</button>
+      <button onclick="redirectToLevel4()">Level 4</button>
+      <button onclick="redirectToLevel5()">Level 5</button>
     </div>
 
     <script>
       // JavaScript function to redirect to level1.html
-      function redirectToLevel() {
+      function redirectToLevel1() {
         window.location.href = "level1.html";
+      }
+      function redirectToLevel2() {
+        window.location.href = "level2.html";
+      }
+      function redirectToLevel3() {
+        window.location.href = "level3.html";
+      }
+      function redirectToLevel5() {
+        window.location.href = "level5.html";
       }
     </script>
   </body>

@@ -11,3 +11,5 @@ export function loadCubeTextures() {
     "/textures/environmentMaps/nz.png",
   ]);
 }
+
+//someone add a skybox
