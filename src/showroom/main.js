@@ -90,7 +90,6 @@ if (s){
         index=0;
     }
 }
-console.log("Loading");
 
 // Load the Showroom Model
 const loader = new GLTFLoader();
@@ -99,16 +98,13 @@ let room;
 loader.load(
     "/showroom/trial.gltf",
     (gltf) => {
-        console.log(gltf);
         room = gltf.scene;
         room.scale.set(0.5, 0.5, 0.5);
         room.position.x = 0;
         room.position.y = 0;
         room.position.z = -1;
-        
         //new CANNON.Vec3(36,0,24)
         scene.add(room);
-        console.log("added Room to scene");
     },
     (xhr) => {
         console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
@@ -157,8 +153,13 @@ async function handleKeydown(e){
     if (e.key=="Enter"){
         localStorage.setItem("StreetCredCar",cars[index]);
         window.history.go(-1);
+        return;
     }
-    if (e.key=="ArrowRight"){
+    else if(e.key=="Escape"){
+        window.history.go(-1);
+        return;
+    }
+    else if (e.key=="ArrowRight"){
         if (index==cars.length-1){
             index=0;
         }
