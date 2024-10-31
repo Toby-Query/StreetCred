@@ -69,7 +69,7 @@ export default class Car {
   init() {
     this.loadModels();
     this.setChassis();
-    this.setInitialPosition({ x: -2, y: 2, z: 0 }, { x: 0, y: 0, z: 0 }); // Set initial position here
+    this.setInitialPosition({ x: -2, y: 2, z: 30 }, { x: 0, y: 0, z: 0 }); // Set initial position here
     this.setWheels();
     this.controls();
     this.update();

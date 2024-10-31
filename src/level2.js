@@ -67,6 +67,27 @@ let lastCallTime;
 const countdownElement = document.getElementById("countdown");
 startCountdown(50, countdownElement);
 
+function checkGoal(carPosition, goalBox) {
+  const { x, y, z } = carPosition;
+  const halfX = goalBox.geometry.parameters.width / 2;
+  const halfY = goalBox.geometry.parameters.height / 2;
+  const halfZ = goalBox.geometry.parameters.depth / 2;
+
+  if (
+    x > goalBox.position.x - halfX &&
+    x < goalBox.position.x + halfX &&
+    y > goalBox.position.y - halfY &&
+    y < goalBox.position.y + halfY &&
+    z > goalBox.position.z - halfZ &&
+    z < goalBox.position.z + halfZ
+  ) {
+    // Trigger end of game
+    console.log("Goal reached! Race is over.");
+    window.location.href = "../goal.html";
+    // Add more actions here, like displaying an end screen or stopping the car
+  }
+}
+
 const tick = () => {
   stats.begin();
   controls.update();
@@ -82,18 +103,18 @@ const tick = () => {
   const carRpm = car.getRpm(); // Assume car.getRpm() returns RPM value
   drawSpeedo(carSpeed, carGear, carRpm, 160, car.isReverse); // Update speedometer display
 
-  // // Car position and quaternion
-  // const carPosition = new THREE.Vector3(
-  //   car.car.chassisBody.position.x,
-  //   car.car.chassisBody.position.y,
-  //   car.car.chassisBody.position.z
-  // );
-  // const carQuaternion = new THREE.Quaternion(
-  //   car.car.chassisBody.quaternion.x,
-  //   car.car.chassisBody.quaternion.y,
-  //   car.car.chassisBody.quaternion.z,
-  //   car.car.chassisBody.quaternion.w
-  // );
+  // Car position and quaternion
+  const carPosition = new THREE.Vector3(
+    car.car.chassisBody.position.x,
+    car.car.chassisBody.position.y,
+    car.car.chassisBody.position.z
+  );
+  const carQuaternion = new THREE.Quaternion(
+    car.car.chassisBody.quaternion.x,
+    car.car.chassisBody.quaternion.y,
+    car.car.chassisBody.quaternion.z,
+    car.car.chassisBody.quaternion.w
+  );
 
   // followCamera.update(carPosition, carQuaternion);
 
