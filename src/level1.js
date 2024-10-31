@@ -6,14 +6,14 @@ import { createControls } from "./setup/cameraControls.js";
 import { setupLights } from "./setup/lights.js";
 import { loadCubeTextures } from "./setup/skybox.js";
 import { initPhysics } from "./setup/physics.js";
-import { setupFloor, createBox } from "./buildWorld.js";
+import { setupFloor, createBox, createGoalBox } from "./buildWorld.js";
 import stats from "./setup/stats.js";
 import Car from "./cars/car.js";
 import Car2 from "./cars/car2.js";
 import { FollowCamera } from "./setup/followCamera.js"; // Import FollowCamera
 import * as CANNON from "cannon-es";
 import { drawSpeedo } from "./gameScreenUI/speedometer.js";
-import { startCountdown } from "./gameScreenUI/timer.js";
+import { preRaceCountdown, startCountdown } from "./gameScreenUI/timer.js";
 
 // Canvas and Scene
 const canvas = document.querySelector("canvas.webgl");
@@ -24,7 +24,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   10000
 );
-camera.position.set(0, 4, 6);
+camera.position.set(0, 40, -30);
 scene.add(camera);
 
 // Renderer
@@ -56,60 +56,177 @@ scene.environment = loadCubeTextures();
 setupFloor(scene, world);
 
 // Follow Camera
-//const followCamera = new FollowCamera(camera); // Initialize with default offset
+const followCamera = new FollowCamera(camera); // Initialize with default offset
 
 // Animation Loop
 const timeStep = 1 / 60; // seconds
 let lastCallTime;
 
 // Usage example: Create a few boxes with varying sizes, colors, masses, and positions
-const box1 = createBox({
-  size: [2, 4, 2],
-  color: 0xff0000,
-  mass: 5000,
-  position: [0, 50, 100],
-  scene: scene,
-  world: world,
-});
-const box2 = createBox({
-  size: [1, 2, 1],
-  color: 0x0000ff,
-  mass: 1000,
-  position: [10, 50, 100],
-  scene: scene,
-  world: world,
-});
 const box3 = createBox({
+  size: [1, 6, 210],
+  color: 0x00ff00,
+  mass: 0,
+  position: [-5, 3, 105],
+  scene: scene,
+  world: world,
+});
+const box4 = createBox({
+  size: [1, 6, 190],
+  color: 0x00ff00,
+  mass: 0,
+  position: [5, 3, 105],
+  scene: scene,
+  world: world,
+});
+const box5 = createBox({
+  size: [565, 6, 1],
+  color: 0x00ff00,
+  mass: 0,
+  position: [95, 3, 0],
+  scene: scene,
+  world: world,
+});
+const box6 = createBox({
+  size: [150, 6, 1],
+  color: 0x00ff00,
+  mass: 0,
+  position: [70, 3, 210],
+  scene: scene,
+  world: world,
+});
+const box7 = createBox({
+  size: [150, 6, 1],
+  color: 0x00ff00,
+  mass: 0,
+  position: [80, 3, 200],
+  scene: scene,
+  world: world,
+});
+const box8 = createBox({
+  size: [150, 6, 1],
+  color: 0x00ff00,
+  mass: 0,
+  position: [208, 3, 253],
+  scene: scene,
+  world: world,
+  rotationY: -Math.PI / 4,
+});
+const box9 = createBox({
+  size: [160, 6, 1],
+  color: 0x00ff00,
+  mass: 0,
+  position: [201, 3, 267],
+  scene: scene,
+  world: world,
+  rotationY: -Math.PI / 4,
+});
+const box10 = createBox({
+  size: [150, 6, 1],
+  color: 0x00ff00,
+  mass: 0,
+  position: [313, 3, 253],
+  scene: scene,
+  world: world,
+  rotationY: Math.PI / 4,
+});
+const box11 = createBox({
+  size: [180, 6, 1],
+  color: 0x00ff00,
+  mass: 0,
+  position: [313, 3, 267],
+  scene: scene,
+  world: world,
+  rotationY: Math.PI / 4,
+});
+const bigHorirontal1 = createBox({
+  size: [405, 6, 1],
+  color: 0x00ff00,
+  mass: 0,
+  position: [185, 3, 105],
+  scene: scene,
+  world: world,
+  rotationY: -Math.PI / 6.5,
+});
+const bigHorirontal2 = createBox({
+  size: [405, 6, 1],
+  color: 0x00ff00,
+  mass: 0,
+  position: [185, 3, 95],
+  scene: scene,
+  world: world,
+  rotationY: -Math.PI / 6.5,
+});
+const box12 = createBox({
+  size: [1, 6, 190],
+  color: 0x00ff00,
+  mass: 0,
+  position: [365, 3, 95],
+  scene: scene,
+  world: world,
+});
+const box13 = createBox({
   size: [1, 6, 220],
   color: 0x00ff00,
-  mass: 8000,
-  position: [-5, 3, 100],
+  mass: 0,
+  position: [378, 3, 95],
   scene: scene,
   world: world,
 });
 
+// Create the goal box
+const goalBox = createGoalBox({
+  size: [13, 6, 10],
+  color: 0x0000ff,
+  position: [370, 3, 5],
+  scene: scene,
+  label: "GOAL",
+});
+
 const countdownElement = document.getElementById("countdown");
-startCountdown(50, countdownElement);
+// Call this function at the start to initiate countdown
+preRaceCountdown(5, () => {
+  // Start main race timer after countdown completes
+  startCountdown(25, countdownElement);
+});
+
+// Function to check if car is within the goal box
+function checkGoal(carPosition, goalBox) {
+  const { x, y, z } = carPosition;
+  const halfX = goalBox.geometry.parameters.width / 2;
+  const halfY = goalBox.geometry.parameters.height / 2;
+  const halfZ = goalBox.geometry.parameters.depth / 2;
+
+  if (
+    x > goalBox.position.x - halfX &&
+    x < goalBox.position.x + halfX &&
+    y > goalBox.position.y - halfY &&
+    y < goalBox.position.y + halfY &&
+    z > goalBox.position.z - halfZ &&
+    z < goalBox.position.z + halfZ
+  ) {
+    // Trigger end of game
+    console.log("Goal reached! Race is over.");
+    window.location.href = "../win.html";
+    // Add more actions here, like displaying an end screen or stopping the car
+  }
+}
+
+let isEditMode = false;
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "e") {
+    isEditMode = true; // Enter edit mode
+    controls.enabled = true; // Enable orbit or other controls for editing
+  } else if (event.key === "p") {
+    isEditMode = false; // Enter play mode
+    controls.enabled = false; // Disable editing controls in play mode
+  }
+});
 
 const tick = () => {
   stats.begin();
   controls.update();
-
-  box1.mesh.position.set(
-    box1.body.position.x,
-    box1.body.position.y,
-    box1.body.position.z
-  );
-  box2.mesh.position.set(
-    box2.body.position.x,
-    box2.body.position.y,
-    box2.body.position.z
-  );
-  box3.mesh.position.set(
-    box3.body.position.x,
-    box3.body.position.y,
-    box3.body.position.z
-  );
 
   const time = performance.now() / 1000; // seconds
   const dt = lastCallTime ? time - lastCallTime : timeStep;
@@ -122,20 +239,26 @@ const tick = () => {
   const carRpm = car.getRpm(); // Assume car.getRpm() returns RPM value
   drawSpeedo(carSpeed, carGear, carRpm, 160, car.isReverse); // Update speedometer display
 
-  // // Car position and quaternion
-  // const carPosition = new THREE.Vector3(
-  //   car.car.chassisBody.position.x,
-  //   car.car.chassisBody.position.y,
-  //   car.car.chassisBody.position.z
-  // );
-  // const carQuaternion = new THREE.Quaternion(
-  //   car.car.chassisBody.quaternion.x,
-  //   car.car.chassisBody.quaternion.y,
-  //   car.car.chassisBody.quaternion.z,
-  //   car.car.chassisBody.quaternion.w
-  // );
+  // Car position and quaternion
+  const carPosition = new THREE.Vector3(
+    car.car.chassisBody.position.x,
+    car.car.chassisBody.position.y,
+    car.car.chassisBody.position.z
+  );
 
-  // followCamera.update(carPosition, carQuaternion);
+  checkGoal(carPosition, goalBox);
+
+  //console.log(carPosition);
+  const carQuaternion = new THREE.Quaternion(
+    car.car.chassisBody.quaternion.x,
+    car.car.chassisBody.quaternion.y,
+    car.car.chassisBody.quaternion.z,
+    car.car.chassisBody.quaternion.w
+  );
+
+  if (!isEditMode) {
+    followCamera.update(carPosition, carQuaternion);
+  }
 
   renderer.render(scene, camera);
   stats.end();
