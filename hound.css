@@ -4,13 +4,7 @@
     box-sizing: border-box;
 }
 
-body {
-    background-image: url("/public/hounds/massamba.jpg");
-    background-position:bottom;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-attachment: fixed;
-}
+
 
 .container{
     position: relative;
