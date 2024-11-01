@@ -212,7 +212,7 @@ const countdownElement = document.getElementById("countdown");
 // Call this function at the start to initiate countdown
 preRaceCountdown(5, () => {
   // Start main race timer after countdown completes
-  startCountdown(25, countdownElement);
+  startCountdown(23, countdownElement);
 });
 
 // Function to check if car is within the goal box
