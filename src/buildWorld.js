@@ -100,6 +100,36 @@ export function createBox({
   return { mesh, body };
 }
 
+export function createColliderBox({
+  size = [2, 4, 2],
+  color = 0x00ff00,
+  texture = null, // New parameter for texture
+  mass = 5000,
+  position = [0, 0, 0],
+  rotationY = 0, // Rotation around the y-axis in radians
+  scene,
+  world,
+}) {
+  // Create a Three.js box
+  const [width, height, depth] = size;
+  // Create a Cannon.js box with half-extents for the physics shape
+  const shape = new CANNON.Box(
+    new CANNON.Vec3(width / 2, height / 2, depth / 2)
+  );
+  const body = new CANNON.Body({ mass });
+  body.addShape(shape);
+
+  // Set the initial position and rotation for the Cannon.js body
+  body.position.set(...position);
+  body.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), rotationY); // Apply y-axis rotation to the body
+
+  // Add the body to the Cannon.js world
+  world.addBody(body);
+
+  // Return both mesh and body for further control if needed
+  return { body };
+}
+
 // Function to create a goal area without physics
 export function createGoalBox({
   size = [13, 6, 10],

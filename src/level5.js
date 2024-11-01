@@ -6,7 +6,7 @@ import { createControls } from "./setup/cameraControls.js";
 import { setupLights } from "./setup/lights.js";
 import { loadCubeTextures } from "./setup/skybox.js";
 import { initPhysics } from "./setup/physics.js";
-import { setupPhysFloor, createBox } from "./buildWorld.js";
+import { setupPhysFloor, createBox,createColliderBox } from "./buildWorld.js";
 import stats from "./setup/stats.js";
 import Car from "./cars/car.js";
 import Car2 from "./cars/car2.js";
@@ -91,7 +91,7 @@ const { world } = initPhysics(scene);
 // Car
 const car = new Car(scene, world);
 car.init();
-
+car.car.chassisBody.position.set(0,1,0);
 // Car2
 // const car2 = new Car2(scene, world);
 // car2.setTarget({ x: -50, y: 0, z: 50 });
@@ -122,11 +122,103 @@ loader.load(
     room.position.z = -20;
     //new CANNON.Vec3(36,0,24)
     scene.add(room);
-    room.traverse((node) => {
+    room.traverse((node) => { 
+      //ground texture
       if (node.name.includes("Plane")) {
-        //console.log(node);
         node.material = new THREE.MeshStandardMaterial({ map: texture1 });
       }
+      //add collider boxes
+      //Van in the back
+      if (node.name.includes("Cube_VanMat")){
+        const box3 = createColliderBox({
+          size: [3, 4, 7.2],
+          color: 0x00ff00,
+          mass: 0,
+          position: [110, 1, -28.7],
+          scene: scene,
+          world: world,
+        });
+      }
+      //candy shop
+      if (node.name.includes("Cube_0")){
+        const box3 = createColliderBox({
+          size: [3, 4, 5.5],
+          color: 0x00ff00,
+          mass: 0,
+          position: [102.5, 1, -34.3],
+          scene: scene,
+          world: world,
+        });
+      }
+      //food stand
+      if (node.name.includes("Object_13")){
+        const box3 = createColliderBox({
+          size: [2, 4, 4],
+          color: 0x00ff00,
+          mass: 0,
+          position: [102, 1, -26.5],
+          scene: scene,
+          world: world,
+        });
+      }
+      //stands
+      if (node.name.includes("Cube004_Material005_0")){
+        console.log(node);
+        const box3 = createColliderBox({
+          size: [12, 14, 35],
+          color: 0x00ff00,
+          mass: 0,
+          position: [107.5, 6, -2],
+          scene: scene,
+          world: world,
+        });
+      }
+      //road guards
+      if (node.name.includes("Sketchfab_model021")){
+        const box3 = createColliderBox({
+          size: [9, 4, 0.4],
+          color: 0x00ff00,
+          mass: 0,
+          position: [110, 0, 47.8],
+          rotationY:-0.45,
+          scene: scene,
+          world: world,
+        });
+      }
+      if (node.name.includes("Sketchfab_model022")){
+        const box3 = createColliderBox({
+          size: [9, 4, 0.4],
+          color: 0x00ff00,
+          mass: 0,
+          position: [117, 0, 52.8],
+          rotationY:-0.95,
+          scene: scene,
+          world: world,
+        });
+      }
+      if (node.name.includes("Sketchfab_model023")){
+        const box3 = createColliderBox({
+          size: [0.4, 4, 9],
+          color: 0x00ff00,
+          mass: 0,
+          position: [120.2, 0, 61],
+          rotationY:0.14,
+          scene: scene,
+          world: world,
+        });
+      }
+      if (node.name.includes("Sketchfab_model024")){
+        const box3 = createColliderBox({
+          size: [9, 4, 0.4],
+          color: 0x00ff00,
+          mass: 0,
+          position: [101, 0, 45],
+          rotationY:-0.1,
+          scene: scene,
+          world: world,
+        });
+      }
+
     });
   },
   (xhr) => {
@@ -215,13 +307,13 @@ function countdown(n, who) {
   } else if (n === 0) {
     who.material.color.setHex(0x00ff00);
     startMatch();
-    startCountdown(50, countdownElement);
+    //startCountdown(50, countdownElement);
     return;
   }
   //renderer.render(scene, camera);
   setTimeout(() => countdown(n - 1, who), 1000);
 }
-countdown(9, this_one);
+countdown(3, this_one);
 
 function distanceBetweenVectors(v1, v2) {
   const dx = v2[0] - v1.x;
