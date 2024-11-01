@@ -49,7 +49,7 @@
 
       .headtitle {
         font-family: "Most Wasted", sans-serif; /* Replace with the correct font */
-        font-size: 4em;
+        font-size: 5em;
         font-weight: bold;
       }
 
@@ -74,7 +74,12 @@
         cursor: pointer;
         color: #fff;
         text-align: center;
+        transition: transform 0.3s ease; /* Smooth transition for the transform */
       }
+
+      .select:hover {
+    transform: scale(1.1); /* Scale the button to 110% */
+}
 
       .select .img img {
         margin-right: 10px;
