@@ -60,6 +60,15 @@
     color: white;
 }
 
+.side .race-details{
+    text-wrap: wrap;
+    text-align: start;
+    font-size: 1.5em;
+    font-weight: bolder;
+    line-height: 1.4em;
+    color: white;
+}
+
 .race-details{
     display: flex;
     flex-direction: column;
