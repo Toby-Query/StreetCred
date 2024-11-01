@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
-
+import { matchStarted } from "../gameScreenUI/timer";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 
@@ -69,7 +69,7 @@ export default class Car {
   init() {
     this.loadModels();
     this.setChassis();
-    this.setInitialPosition({ x: -2, y: 2, z: 0 }, { x: 0, y: 0, z: 0 }); // Set initial position here
+    this.setInitialPosition({ x: -2, y: 2, z: 20 }, { x: 0, y: 0, z: 0 }); // Set initial position here
     this.setWheels();
     this.controls();
     this.update();
@@ -258,45 +258,9 @@ export default class Car {
       hindMovement();
     });
 
-    const hindMovement = () => {
-      if (keysPressed.includes("r") || keysPressed.includes("r")) resetCar();
-
-      if (!keysPressed.includes(" ") && !keysPressed.includes(" ")) {
-        this.car.setBrake(0, 0);
-        this.car.setBrake(0, 1);
-        this.car.setBrake(0, 2);
-        this.car.setBrake(0, 3);
-
-        if (matchStarted) {
-          if (keysPressed.includes("a") || keysPressed.includes("arrowleft")) {
-            console.log("left");
-            this.car.setSteeringValue(maxSteerVal * 1, 2);
-            this.car.setSteeringValue(maxSteerVal * 1, 3);
-          } else if (
-            keysPressed.includes("d") ||
-            keysPressed.includes("arrowright")
-          ) {
-            this.car.setSteeringValue(maxSteerVal * -1, 2);
-            this.car.setSteeringValue(maxSteerVal * -1, 3);
-          } else stopSteer();
-
-        if (keysPressed.includes("w") || keysPressed.includes("arrowup")) {
-          this.isReverse = false;
-          this.car.applyEngineForce(maxForce * -1, 0);
-          this.car.applyEngineForce(maxForce * -1, 1);
-          this.car.applyEngineForce(maxForce * -1, 2);
-          this.car.applyEngineForce(maxForce * -1, 3);
-        } else if (
-          keysPressed.includes("s") ||
-          keysPressed.includes("arrowdown")
-        ) {
-          this.isReverse = true;
-          this.car.applyEngineForce(maxForce * 1, 0);
-          this.car.applyEngineForce(maxForce * 1, 1);
-          this.car.applyEngineForce(maxForce * 1, 2);
-          this.car.applyEngineForce(maxForce * 1, 3);
-        } else stopCar();
-      } else brake();
+    const stopSteer = () => {
+      this.car.setSteeringValue(0, 2);
+      this.car.setSteeringValue(0, 3);
     };
 
     const resetCar = () => {
@@ -320,9 +284,46 @@ export default class Car {
       this.car.setBrake(slowDownCar, 3);
     };
 
-    const stopSteer = () => {
-      this.car.setSteeringValue(0, 2);
-      this.car.setSteeringValue(0, 3);
+    const hindMovement = () => {
+      if (keysPressed.includes("r") || keysPressed.includes("r")) resetCar();
+
+      if (!keysPressed.includes(" ") && !keysPressed.includes(" ")) {
+        this.car.setBrake(0, 0);
+        this.car.setBrake(0, 1);
+        this.car.setBrake(0, 2);
+        this.car.setBrake(0, 3);
+
+        if (matchStarted) {
+          if (keysPressed.includes("a") || keysPressed.includes("arrowleft")) {
+            console.log("left");
+            this.car.setSteeringValue(maxSteerVal * 1, 2);
+            this.car.setSteeringValue(maxSteerVal * 1, 3);
+          } else if (
+            keysPressed.includes("d") ||
+            keysPressed.includes("arrowright")
+          ) {
+            this.car.setSteeringValue(maxSteerVal * -1, 2);
+            this.car.setSteeringValue(maxSteerVal * -1, 3);
+          } else stopSteer();
+
+          if (keysPressed.includes("w") || keysPressed.includes("arrowup")) {
+            this.isReverse = false;
+            this.car.applyEngineForce(maxForce * -1, 0);
+            this.car.applyEngineForce(maxForce * -1, 1);
+            this.car.applyEngineForce(maxForce * -1, 2);
+            this.car.applyEngineForce(maxForce * -1, 3);
+          } else if (
+            keysPressed.includes("s") ||
+            keysPressed.includes("arrowdown")
+          ) {
+            this.isReverse = true;
+            this.car.applyEngineForce(maxForce * 1, 0);
+            this.car.applyEngineForce(maxForce * 1, 1);
+            this.car.applyEngineForce(maxForce * 1, 2);
+            this.car.applyEngineForce(maxForce * 1, 3);
+          } else stopCar();
+        } else brake();
+      }
     };
   }
 
