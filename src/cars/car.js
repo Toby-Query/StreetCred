@@ -328,6 +328,7 @@ export default class Car {
 
         if (matchStarted) {
           if (keysPressed.includes("a") || keysPressed.includes("arrowleft")) {
+            console.log("left");
             this.car.setSteeringValue(maxSteerVal * 1, 2);
             this.car.setSteeringValue(maxSteerVal * 1, 3);
           } else if (
