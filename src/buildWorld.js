@@ -33,6 +33,16 @@ export function setupFloor(scene, world) {
   );
   world.addBody(floorBody);
 }
+export function setupPhysFloor(world){
+  const floorShape = new CANNON.Plane();
+  const floorBody = new CANNON.Body({ mass: 0 });
+  floorBody.addShape(floorShape);
+  floorBody.quaternion.setFromAxisAngle(
+    new CANNON.Vec3(-1, 0, 0),
+    Math.PI * 0.5
+  );
+  world.addBody(floorBody);
+}
 
 export function createBox({
   size = [2, 4, 2],

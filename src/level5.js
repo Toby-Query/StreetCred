@@ -6,7 +6,7 @@ import { createControls } from "./setup/cameraControls.js";
 import { setupLights } from "./setup/lights.js";
 import { loadCubeTextures } from "./setup/skybox.js";
 import { initPhysics } from "./setup/physics.js";
-import { setupFloor, createBox } from "./buildWorld.js";
+import { setupPhysFloor, createBox } from "./buildWorld.js";
 import stats from "./setup/stats.js";
 import Car from "./cars/car.js";
 import Car2 from "./cars/car2.js";
@@ -16,6 +16,7 @@ import { drawSpeedo } from "./gameScreenUI/speedometer.js";
 import { startCountdown } from "./gameScreenUI/timer.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
+console.log("what")
 // Canvas and Scene
 const canvas = document.querySelector("canvas.webgl");
 const scene = new THREE.Scene();
@@ -29,16 +30,6 @@ const camera = new THREE.PerspectiveCamera(
 const checkpoints=[];
 let score=0;
 
-const dummyGeo = new THREE.BoxGeometry(1, 0.8, 2.2);
-const dummyMat = new THREE.MeshBasicMaterial({
-  color: 0xff0000,
-  wireframe: true,
-});
-const dummyMesh = new THREE.Mesh(dummyGeo, dummyMat);
-dummyMesh.position.x = -130.7;
-dummyMesh.position.y = 0;
-dummyMesh.position.z = 17;
-scene.add(dummyMesh);
 
 //that_one.quaternion.set(0,0,0,1);
 let curr_index=0;
@@ -116,8 +107,11 @@ setupLights(scene);
 // Environment Textures
 scene.environment = loadCubeTextures();
 
+const textureLoader = new THREE.TextureLoader();
+const texture1 = textureLoader.load("/track5/newtextures/Poliigon_GrassPatchyGround_4585_BaseColor.jpg");
+
 // Floor
-setupFloor(scene, world);
+setupPhysFloor(world);
 let room;
 const loader = new GLTFLoader();
 loader.load(
@@ -130,6 +124,12 @@ loader.load(
         room.position.z = -20;
         //new CANNON.Vec3(36,0,24)
         scene.add(room);
+        room.traverse((node) => { 
+          if (node.name.includes("Plane")){
+             //console.log(node); 
+             node.material = new THREE.MeshStandardMaterial({ map: texture1 });
+            }
+        });
     },
     (xhr) => {
         console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
@@ -141,6 +141,7 @@ loader.load(
 var camera_toggle=false;
 var follower;
 window.addEventListener("keydown",(e)=>{
+  // console.log(e.key);
   if(e.key=="c"){
     camera_toggle=!camera_toggle;
   }

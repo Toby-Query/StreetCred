@@ -1,9 +1,8 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
-import { matchStarted } from "../gameScreenUI/timer";
+
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
-import { preloadAudio, playAudio, pauseAudio } from "../setup/audioLoader";
 
 export default class Car {
   constructor(scene, world) {
@@ -28,11 +27,6 @@ export default class Car {
       hindWheel: 0.67,
     };
     this.mass = 250;
-    this.accelerateSource = null;
-    this.isAcceleratePlaying = false;
-
-    this.brakeSource = null;
-    this.isBrakePlaying = false;
   }
 
   // Method to get current speed in miles per hour
@@ -72,16 +66,11 @@ export default class Car {
     return this.engineRpm / 1000;
   }
 
-  async init() {
+  init() {
     this.loadModels();
     this.setChassis();
-    this.setInitialPosition({ x: -2, y: 2, z: 30 }, { x: 0, y: 0, z: 0 }); // Set initial position here
+    this.setInitialPosition({ x: -2, y: 2, z: 0 }, { x: 0, y: 0, z: 0 }); // Set initial position here
     this.setWheels();
-
-    await preloadAudio().then(() => {
-      console.log("Audio loaded and ready to play.");
-    });
-
     this.controls();
     this.update();
   }
@@ -95,50 +84,31 @@ export default class Car {
 
     gltfLoader.setDRACOLoader(dracoLoader);
 
-    // Create promises for each model
-    const chassisPromise = new Promise((resolve) => {
-      gltfLoader.load("./car/chassis.gltf", (gltf) => {
-        this.chassis = gltf.scene;
-        this.scene.add(this.chassis);
-        resolve(); // Resolve once the chassis is loaded
-      });
+    gltfLoader.load("./car/chassis.gltf", (gltf) => {
+      this.chassis = gltf.scene;
+      this.scene.add(this.chassis);
     });
 
     this.wheels = [];
-    const wheelPromises = [];
-
     for (let i = 0; i < 4; i++) {
-      const wheelPromise = new Promise((resolve) => {
-        gltfLoader.load("./car/wheel.gltf", (gltf) => {
-          const model = gltf.scene;
-          this.wheels[i] = model;
-
-          // Scale wheels based on position
-          if (i === 1 || i === 3) {
-            this.wheels[i].scale.set(
-              -1 * this.wheelScale.frontWheel,
-              1 * this.wheelScale.frontWheel,
-              -1 * this.wheelScale.frontWheel
-            );
-          } else {
-            this.wheels[i].scale.set(
-              1 * this.wheelScale.frontWheel,
-              1 * this.wheelScale.frontWheel,
-              1 * this.wheelScale.frontWheel
-            );
-          }
-          this.scene.add(this.wheels[i]);
-          resolve(); // Resolve once each wheel is loaded
-        });
+      gltfLoader.load("./car/wheel.gltf", (gltf) => {
+        const model = gltf.scene;
+        this.wheels[i] = model;
+        if (i === 1 || i === 3)
+          this.wheels[i].scale.set(
+            -1 * this.wheelScale.frontWheel,
+            1 * this.wheelScale.frontWheel,
+            -1 * this.wheelScale.frontWheel
+          );
+        else
+          this.wheels[i].scale.set(
+            1 * this.wheelScale.frontWheel,
+            1 * this.wheelScale.frontWheel,
+            1 * this.wheelScale.frontWheel
+          );
+        this.scene.add(this.wheels[i]);
       });
-      wheelPromises.push(wheelPromise);
     }
-
-    // Use Promise.all to wait until all models are loaded
-    Promise.all([chassisPromise, ...wheelPromises]).then(() => {
-      console.log("All models loaded");
-      // You can trigger any other function here once all models are loaded
-    });
   }
 
   setChassis() {
@@ -267,7 +237,7 @@ export default class Car {
     this.car.chassisBody.angularVelocity.set(0, 0, 0);
   }
 
-  async controls() {
+  controls() {
     const maxSteerVal = 0.5;
     const maxForce = 750;
     const brakeForce = 36;
@@ -288,83 +258,43 @@ export default class Car {
       hindMovement();
     });
 
-    const playEngineSound = () => {
-      if (!this.isAcceleratePlaying) {
-        this.accelerateSource = playAudio("accelerate");
-        this.isAcceleratePlaying = true;
-      }
-    };
-
-    const pauseEngineSound = () => {
-      if (this.isAcceleratePlaying) {
-        pauseAudio(this.accelerateSource);
-        this.isAcceleratePlaying = false;
-      }
-    };
-
-    const playBrakeSound = () => {
-      if (!this.isBrakePlaying) {
-        this.brakeSource = playAudio("brake");
-        this.isBrakePlaying = true;
-      }
-    };
-
-    const pauseBrakeSound = () => {
-      if (this.isBrakePlaying) {
-        pauseAudio(this.brakeSource);
-        this.isBrakePlaying = false;
-      }
-    };
-
     const hindMovement = () => {
       if (keysPressed.includes("r") || keysPressed.includes("r")) resetCar();
 
       if (!keysPressed.includes(" ") && !keysPressed.includes(" ")) {
-        pauseBrakeSound();
         this.car.setBrake(0, 0);
         this.car.setBrake(0, 1);
         this.car.setBrake(0, 2);
         this.car.setBrake(0, 3);
 
-        if (matchStarted) {
-          if (keysPressed.includes("a") || keysPressed.includes("arrowleft")) {
-            this.car.setSteeringValue(maxSteerVal * 1, 2);
-            this.car.setSteeringValue(maxSteerVal * 1, 3);
-          } else if (
-            keysPressed.includes("d") ||
-            keysPressed.includes("arrowright")
-          ) {
-            this.car.setSteeringValue(maxSteerVal * -1, 2);
-            this.car.setSteeringValue(maxSteerVal * -1, 3);
-          } else stopSteer();
+        if (keysPressed.includes("a") || keysPressed.includes("arrowleft")) {
+          this.car.setSteeringValue(maxSteerVal * 1, 2);
+          this.car.setSteeringValue(maxSteerVal * 1, 3);
+        } else if (
+          keysPressed.includes("d") ||
+          keysPressed.includes("arrowright")
+        ) {
+          this.car.setSteeringValue(maxSteerVal * -1, 2);
+          this.car.setSteeringValue(maxSteerVal * -1, 3);
+        } else stopSteer();
 
-          if (keysPressed.includes("w") || keysPressed.includes("arrowup")) {
-            if (this.getSpeed() > 50) playEngineSound();
-            this.isReverse = false;
-            this.car.applyEngineForce(maxForce * -1, 0);
-            this.car.applyEngineForce(maxForce * -1, 1);
-            this.car.applyEngineForce(maxForce * -1, 2);
-            this.car.applyEngineForce(maxForce * -1, 3);
-          } else if (
-            keysPressed.includes("s") ||
-            keysPressed.includes("arrowdown")
-          ) {
-            pauseEngineSound();
-            this.isReverse = true;
-            this.car.applyEngineForce(maxForce * 1, 0);
-            this.car.applyEngineForce(maxForce * 1, 1);
-            this.car.applyEngineForce(maxForce * 1, 2);
-            this.car.applyEngineForce(maxForce * 1, 3);
-          } else {
-            pauseEngineSound();
-            stopCar();
-          }
-        }
-      } else {
-        pauseEngineSound();
-        playBrakeSound();
-        brake();
-      }
+        if (keysPressed.includes("w") || keysPressed.includes("arrowup")) {
+          this.isReverse = false;
+          this.car.applyEngineForce(maxForce * -1, 0);
+          this.car.applyEngineForce(maxForce * -1, 1);
+          this.car.applyEngineForce(maxForce * -1, 2);
+          this.car.applyEngineForce(maxForce * -1, 3);
+        } else if (
+          keysPressed.includes("s") ||
+          keysPressed.includes("arrowdown")
+        ) {
+          this.isReverse = true;
+          this.car.applyEngineForce(maxForce * 1, 0);
+          this.car.applyEngineForce(maxForce * 1, 1);
+          this.car.applyEngineForce(maxForce * 1, 2);
+          this.car.applyEngineForce(maxForce * 1, 3);
+        } else stopCar();
+      } else brake();
     };
 
     const resetCar = () => {
