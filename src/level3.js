@@ -13,7 +13,7 @@ import Car2 from "./cars/car2.js";
 import { FollowCamera } from "./setup/followCamera.js"; // Import FollowCamera
 import * as CANNON from "cannon-es";
 import { drawSpeedo } from "./gameScreenUI/speedometer.js";
-import { startCountdown } from "./gameScreenUI/timer.js";
+import { startCountdown, startMatch } from "./gameScreenUI/timer.js";
 
 // Canvas and Scene
 const canvas = document.querySelector("canvas.webgl");
@@ -55,8 +55,25 @@ scene.environment = loadCubeTextures();
 // Floor
 setupFloor(scene, world);
 
+const box3 = createBox({
+  size: [1, 6, 210],
+  color: 0x00ff00,
+  mass: 0,
+  position: [-5, 3, 105],
+  scene: scene,
+  world: world,
+});
+const box4 = createBox({
+  size: [1, 6, 190],
+  color: 0x00ff00,
+  mass: 0,
+  position: [5, 3, 105],
+  scene: scene,
+  world: world,
+});
+
 // Follow Camera
-//const followCamera = new FollowCamera(camera); // Initialize with default offset
+const followCamera = new FollowCamera(camera); // Initialize with default offset
 
 // Animation Loop
 const timeStep = 1 / 60; // seconds
@@ -99,6 +116,8 @@ document.addEventListener("keydown", (event) => {
     controls.enabled = false; // Disable editing controls in play mode
   }
 });
+
+startMatch();
 
 const tick = () => {
   stats.begin();

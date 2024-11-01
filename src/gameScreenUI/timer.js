@@ -4,7 +4,7 @@ import { playAudio, preloadAudio } from "../setup/audioLoader";
 
 export let matchStarted = false;
 
-function startMatch() {
+export function startMatch() {
   matchStarted = true;
 }
 
