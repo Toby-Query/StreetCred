@@ -4,7 +4,7 @@ import { sizes, handleResize } from "./setup/sizes.js";
 import { createRenderer } from "./setup/renderer.js";
 import { createControls } from "./setup/cameraControls.js";
 import { setupLights } from "./setup/lights.js";
-import { loadCubeTextures } from "./setup/skybox.js";
+import { loadCubeTextures, loadSkybox } from "./setup/skybox.js";
 import { initPhysics } from "./setup/physics.js";
 import { setupFloor, createBox, createGoalBox } from "./buildWorld.js";
 import stats from "./setup/stats.js";
@@ -54,6 +54,8 @@ scene.environment = loadCubeTextures();
 
 // Floor
 setupFloor(scene, world);
+
+loadSkybox(scene);
 
 // Follow Camera
 const followCamera = new FollowCamera(camera); // Initialize with default offset

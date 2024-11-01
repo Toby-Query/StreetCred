@@ -13,10 +13,10 @@ import Car2 from "./cars/car2.js";
 import { FollowCamera } from "./setup/followCamera.js"; // Import FollowCamera
 import * as CANNON from "cannon-es";
 import { drawSpeedo } from "./gameScreenUI/speedometer.js";
-import { startCountdown } from "./gameScreenUI/timer.js";
+import { startCountdown, startMatch } from "./gameScreenUI/timer.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
-console.log("what")
+console.log("what");
 // Canvas and Scene
 const canvas = document.querySelector("canvas.webgl");
 const scene = new THREE.Scene();
@@ -27,9 +27,8 @@ const camera = new THREE.PerspectiveCamera(
   10000
 );
 
-const checkpoints=[];
-let score=0;
-
+const checkpoints = [];
+let score = 0;
 
 //that_one.quaternion.set(0,0,0,1);
 let curr_index = 0;
@@ -105,42 +104,44 @@ setupLights(scene);
 scene.environment = loadCubeTextures();
 
 const textureLoader = new THREE.TextureLoader();
-const texture1 = textureLoader.load("/track5/newtextures/Poliigon_GrassPatchyGround_4585_BaseColor.jpg");
+const texture1 = textureLoader.load(
+  "/track5/newtextures/Poliigon_GrassPatchyGround_4585_BaseColor.jpg"
+);
 
 // Floor
 setupPhysFloor(world);
 let room;
 const loader = new GLTFLoader();
 loader.load(
-    "/track5/scene.gltf",
-    (gltf) => {
-        room = gltf.scene;
-        room.scale.set(0.5, 0.5, 0.5);
-        room.position.x = -35;
-        room.position.y = -1;
-        room.position.z = -20;
-        //new CANNON.Vec3(36,0,24)
-        scene.add(room);
-        room.traverse((node) => { 
-          if (node.name.includes("Plane")){
-             //console.log(node); 
-             node.material = new THREE.MeshStandardMaterial({ map: texture1 });
-            }
-        });
-    },
-    (xhr) => {
-        console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-    },
-    (error) => {
-        console.error("An error occurred while loading the model:", error);
-    }
+  "/track5/scene.gltf",
+  (gltf) => {
+    room = gltf.scene;
+    room.scale.set(0.5, 0.5, 0.5);
+    room.position.x = -35;
+    room.position.y = -1;
+    room.position.z = -20;
+    //new CANNON.Vec3(36,0,24)
+    scene.add(room);
+    room.traverse((node) => {
+      if (node.name.includes("Plane")) {
+        //console.log(node);
+        node.material = new THREE.MeshStandardMaterial({ map: texture1 });
+      }
+    });
+  },
+  (xhr) => {
+    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+  },
+  (error) => {
+    console.error("An error occurred while loading the model:", error);
+  }
 );
 var camera_toggle = false;
 var follower;
-window.addEventListener("keydown",(e)=>{
+window.addEventListener("keydown", (e) => {
   // console.log(e.key);
-  if(e.key=="c"){
-    camera_toggle=!camera_toggle;
+  if (e.key == "c") {
+    camera_toggle = !camera_toggle;
   }
   if (camera_toggle) {
     //camera.position.set(0, 10, 10);
@@ -213,6 +214,7 @@ function countdown(n, who) {
     who.material.color.setHex(0xffa500);
   } else if (n === 0) {
     who.material.color.setHex(0x00ff00);
+    startMatch();
     startCountdown(50, countdownElement);
     return;
   }
@@ -297,9 +299,9 @@ const tick = () => {
     //you have finished the race
     console.log("done");
   }
-  if (camera_toggle) {
-    followCamera.update(carPosition, carQuaternion);
-  }
+  // if (camera_toggle) {
+  followCamera.update(carPosition, carQuaternion);
+  // }
 
   renderer.render(scene, camera);
   stats.end();
