@@ -86,6 +86,8 @@ export default class Car {
 
     gltfLoader.load("./car/chassis.gltf", (gltf) => {
       this.chassis = gltf.scene;
+      this.chassis.castShadow = true; // Enable shadow casting
+      this.chassis.receiveShadow = true; // Enable shadow receiving
       this.scene.add(this.chassis);
     });
 
@@ -93,6 +95,8 @@ export default class Car {
     for (let i = 0; i < 4; i++) {
       gltfLoader.load("./car/wheel.gltf", (gltf) => {
         const model = gltf.scene;
+        model.castShadow = true; // Enable shadow casting for each wheel
+        model.receiveShadow = true; // Enable shadow receiving for each wheel
         this.wheels[i] = model;
         if (i === 1 || i === 3)
           this.wheels[i].scale.set(

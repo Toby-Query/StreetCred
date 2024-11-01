@@ -1,12 +1,29 @@
 import * as THREE from "three";
 
 export function setupLights(scene) {
-  //   const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
-  //   const spotLight1 = new THREE.SpotLight(0x29dfff, 2, 0, 0.9, 1, 0);
-  //   spotLight1.position.set(7, 1.291, -6);
-  //   const spotLight2 = new THREE.SpotLight(0x943dff, 2, 0, 0.9, 1, 0);
-  //   spotLight2.position.set(-7, 1.291, -6);
-  //   const spotLight3 = new THREE.SpotLight(0xd5f8ff, 2, 0, 0.9, 1, 0);
-  //   spotLight3.position.set(0, 1.291, 7);
-  //   scene.add(ambientLight, spotLight1, spotLight2, spotLight3);
+  // Create a directional light with white color and specified intensity
+  const light = new THREE.DirectionalLight(0xffffff, 1);
+  light.position.set(100, 200, 100); // Position the light at an elevated angle
+  scene.add(light);
+
+  // Enable shadows for the light
+  light.castShadow = true;
+
+  // Set the shadow map size for better resolution
+  light.shadow.mapSize.width = 1024; // Adjust for shadow quality
+  light.shadow.mapSize.height = 1024;
+
+  // Set the shadow camera to cover an 800x800 area
+  light.shadow.camera.left = -400; // -800 / 2
+  light.shadow.camera.right = 400; // 800 / 2
+  light.shadow.camera.top = 400; // 800 / 2
+  light.shadow.camera.bottom = -400; // -800 / 2
+
+  // Set the shadow camera near and far planes to enclose the scene
+  light.shadow.camera.near = 1;
+  light.shadow.camera.far = 1000;
+
+  // Optional: visualize the shadow camera to see the area covered
+  const shadowHelper = new THREE.CameraHelper(light.shadow.camera);
+  scene.add(shadowHelper);
 }

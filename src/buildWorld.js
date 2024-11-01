@@ -79,6 +79,12 @@ export function createBox({
   mesh.position.set(...position);
   mesh.rotation.y = rotationY; // Apply y-axis rotation to the mesh
 
+  //cast shadows
+  mesh.castShadow = true;
+
+  //receive shadows
+  mesh.receiveShadow = true;
+
   // Add the mesh to the Three.js scene
   scene.add(mesh);
 
