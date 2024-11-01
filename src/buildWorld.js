@@ -7,13 +7,23 @@ export function setupFloor(scene, world) {
   const width = 800;
   const height = 800;
 
+  const textureLoader = new THREE.TextureLoader();
+  const texture = textureLoader.load(
+    "/textures/asphalt/asphalt_02_diff_4k.jpg"
+  );
+  // Set the texture's repeat properties
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(80, 80); // Apply texture scaling
+
   const floorGeo = new THREE.PlaneGeometry(width, height);
   const floorMesh = new THREE.Mesh(
     floorGeo,
     new THREE.MeshStandardMaterial({
-      color: 0xffffff,
+      //color: 0xffffff,
       roughness: 0.5,
       metalness: 0,
+      map: texture,
     })
   );
   floorMesh.rotation.x = -Math.PI * 0.5;
@@ -33,7 +43,7 @@ export function setupFloor(scene, world) {
   );
   world.addBody(floorBody);
 }
-export function setupPhysFloor(world){
+export function setupPhysFloor(world) {
   const floorShape = new CANNON.Plane();
   const floorBody = new CANNON.Body({ mass: 0 });
   floorBody.addShape(floorShape);
@@ -47,6 +57,7 @@ export function setupPhysFloor(world){
 export function createBox({
   size = [2, 4, 2],
   color = 0x00ff00,
+  texture = null, // New parameter for texture
   mass = 5000,
   position = [0, 0, 0],
   rotationY = 0, // Rotation around the y-axis in radians
@@ -56,7 +67,12 @@ export function createBox({
   // Create a Three.js box
   const [width, height, depth] = size;
   const geo = new THREE.BoxGeometry(width, height, depth);
-  const mat = new THREE.MeshBasicMaterial({ color });
+
+  // Create material with texture or color
+  const mat = texture
+    ? new THREE.MeshStandardMaterial({ map: texture }) // Apply texture if provided
+    : new THREE.MeshStandardMaterial({ color }); // Apply color if no texture is provided
+
   const mesh = new THREE.Mesh(geo, mat);
 
   // Set initial position and rotation for the Three.js mesh

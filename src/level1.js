@@ -64,6 +64,16 @@ const followCamera = new FollowCamera(camera); // Initialize with default offset
 const timeStep = 1 / 60; // seconds
 let lastCallTime;
 
+//load texture
+const textureLoader = new THREE.TextureLoader();
+const texture = textureLoader.load(
+  "public/textures/wall/rustic_stone_wall_diff_4k.jpg"
+);
+// Set the texture's repeat properties
+texture.wrapS = THREE.RepeatWrapping;
+texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.set(30, 3); // Apply texture scaling
+
 // Usage example: Create a few boxes with varying sizes, colors, masses, and positions
 const box3 = createBox({
   size: [1, 6, 210],
@@ -72,6 +82,7 @@ const box3 = createBox({
   position: [-5, 3, 105],
   scene: scene,
   world: world,
+  texture: texture,
 });
 const box4 = createBox({
   size: [1, 6, 190],
@@ -80,6 +91,7 @@ const box4 = createBox({
   position: [5, 3, 105],
   scene: scene,
   world: world,
+  texture: texture,
 });
 const box5 = createBox({
   size: [565, 6, 1],
@@ -88,6 +100,7 @@ const box5 = createBox({
   position: [95, 3, 0],
   scene: scene,
   world: world,
+  texture: texture,
 });
 const box6 = createBox({
   size: [150, 6, 1],
@@ -96,6 +109,7 @@ const box6 = createBox({
   position: [70, 3, 210],
   scene: scene,
   world: world,
+  texture: texture,
 });
 const box7 = createBox({
   size: [150, 6, 1],
@@ -104,6 +118,7 @@ const box7 = createBox({
   position: [80, 3, 200],
   scene: scene,
   world: world,
+  texture: texture,
 });
 const box8 = createBox({
   size: [150, 6, 1],
@@ -113,6 +128,7 @@ const box8 = createBox({
   scene: scene,
   world: world,
   rotationY: -Math.PI / 4,
+  texture: texture,
 });
 const box9 = createBox({
   size: [160, 6, 1],
@@ -122,6 +138,7 @@ const box9 = createBox({
   scene: scene,
   world: world,
   rotationY: -Math.PI / 4,
+  texture: texture,
 });
 const box10 = createBox({
   size: [150, 6, 1],
@@ -131,6 +148,7 @@ const box10 = createBox({
   scene: scene,
   world: world,
   rotationY: Math.PI / 4,
+  texture: texture,
 });
 const box11 = createBox({
   size: [180, 6, 1],
@@ -140,6 +158,7 @@ const box11 = createBox({
   scene: scene,
   world: world,
   rotationY: Math.PI / 4,
+  texture: texture,
 });
 const bigHorirontal1 = createBox({
   size: [405, 6, 1],
@@ -149,6 +168,7 @@ const bigHorirontal1 = createBox({
   scene: scene,
   world: world,
   rotationY: -Math.PI / 6.5,
+  texture: texture,
 });
 const bigHorirontal2 = createBox({
   size: [405, 6, 1],
@@ -158,6 +178,7 @@ const bigHorirontal2 = createBox({
   scene: scene,
   world: world,
   rotationY: -Math.PI / 6.5,
+  texture: texture,
 });
 const box12 = createBox({
   size: [1, 6, 190],
@@ -166,6 +187,7 @@ const box12 = createBox({
   position: [365, 3, 95],
   scene: scene,
   world: world,
+  texture: texture,
 });
 const box13 = createBox({
   size: [1, 6, 220],
@@ -174,6 +196,7 @@ const box13 = createBox({
   position: [378, 3, 95],
   scene: scene,
   world: world,
+  texture: texture,
 });
 
 // Create the goal box
