@@ -14,7 +14,11 @@ export class FollowCamera {
 
     // Smoothly transition the camera to the calculated position
     //this.camera.position.lerp(cameraPosition, 0.1);
-    this.camera.position.set(cameraPosition.x,cameraPosition.y,cameraPosition.z);
+    this.camera.position.set(
+      cameraPosition.x,
+      cameraPosition.y,
+      cameraPosition.z
+    );
     this.camera.lookAt(carPosition);
   }
 }

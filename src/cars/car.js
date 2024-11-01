@@ -267,16 +267,18 @@ export default class Car {
         this.car.setBrake(0, 2);
         this.car.setBrake(0, 3);
 
-        if (keysPressed.includes("a") || keysPressed.includes("arrowleft")) {
-          this.car.setSteeringValue(maxSteerVal * 1, 2);
-          this.car.setSteeringValue(maxSteerVal * 1, 3);
-        } else if (
-          keysPressed.includes("d") ||
-          keysPressed.includes("arrowright")
-        ) {
-          this.car.setSteeringValue(maxSteerVal * -1, 2);
-          this.car.setSteeringValue(maxSteerVal * -1, 3);
-        } else stopSteer();
+        if (matchStarted) {
+          if (keysPressed.includes("a") || keysPressed.includes("arrowleft")) {
+            console.log("left");
+            this.car.setSteeringValue(maxSteerVal * 1, 2);
+            this.car.setSteeringValue(maxSteerVal * 1, 3);
+          } else if (
+            keysPressed.includes("d") ||
+            keysPressed.includes("arrowright")
+          ) {
+            this.car.setSteeringValue(maxSteerVal * -1, 2);
+            this.car.setSteeringValue(maxSteerVal * -1, 3);
+          } else stopSteer();
 
         if (keysPressed.includes("w") || keysPressed.includes("arrowup")) {
           this.isReverse = false;
