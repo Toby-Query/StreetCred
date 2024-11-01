@@ -4,7 +4,7 @@ import { sizes, handleResize } from "./setup/sizes.js";
 import { createRenderer } from "./setup/renderer.js";
 import { createControls } from "./setup/cameraControls.js";
 import { setupLights } from "./setup/lights.js";
-import { loadCubeTextures } from "./setup/skybox.js";
+import { loadCubeTextures, loadSkybox } from "./setup/skybox.js";
 import { initPhysics } from "./setup/physics.js";
 import { setupPhysFloor, createBox,createColliderBox } from "./buildWorld.js";
 import stats from "./setup/stats.js";
@@ -30,8 +30,9 @@ const camera = new THREE.PerspectiveCamera(
 const checkpoints = [];
 let score = 0;
 
-//that_one.quaternion.set(0,0,0,1);
 let curr_index = 0;
+
+//make checkpoints for race
 checkpoints.push({
   position: [0, 0, 80],
   quaternion: [0, -0.3826834323650898, 0, 0.9238795325112867],
@@ -102,7 +103,7 @@ setupLights(scene);
 
 // Environment Textures
 scene.environment = loadCubeTextures();
-
+loadSkybox(scene);
 const textureLoader = new THREE.TextureLoader();
 const texture1 = textureLoader.load(
   "/track5/newtextures/Poliigon_GrassPatchyGround_4585_BaseColor.jpg"
@@ -244,27 +245,6 @@ window.addEventListener("keydown", (e) => {
   }
 });
 
-// let torus;
-// loader.load(
-//     "/track5/torus/scene.gltf",
-//     (gltf) => {
-//         torus = gltf.scene;
-//         torus.scale.set(0.3, 0.3, 0.3);
-//         torus.position.x = 0;
-//         torus.position.y = 0;
-//         torus.position.z = 0;
-//         //new CANNON.Vec3(36,0,24)
-//         console.log(torus);
-//         scene.add(torus);
-//     },
-//     (xhr) => {
-//         console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
-//     },
-//     (error) => {
-//         console.error("An error occurred while loading the model:", error);
-//     }
-// );
-//const this_geometry = new THREE.TorusGeometry(19, 0.5, 30, 200);
 const this_geometry = new THREE.TorusGeometry(8, 0.5, 10, 100);
 const this_material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
 let this_one = new THREE.Mesh(this_geometry, this_material);
