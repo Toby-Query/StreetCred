@@ -39,7 +39,7 @@ const { world } = initPhysics(scene);
 
 // Car
 const car = new Car(scene, world);
-car.init({ x: 2, y: 55, z: 30 });
+car.init({ x: -380, y: 55, z: 30 });
 
 // Car2
 // const car2 = new Car2(scene, world);
@@ -59,15 +59,23 @@ const box3 = createBox({
   size: [50, 100, 200],
   color: 0x00ff00,
   mass: 0,
-  position: [-30, 3, 105],
+  position: [-375, 3, 105],
   scene: scene,
   world: world,
 });
 const box4 = createBox({
-  size: [4, 90, 190],
+  size: [3, 2, 390],
   color: 0xff0000,
   mass: 0,
-  position: [5, 3, 250],
+  position: [-375, 52, 400],
+  scene: scene,
+  world: world,
+});
+const box5 = createBox({
+  size: [50, 100, 200],
+  color: 0x00ff00,
+  mass: 0,
+  position: [-375, 3, 800 - 105],
   scene: scene,
   world: world,
 });
@@ -84,7 +92,8 @@ let lastCallTime;
 // Usage example: Create a few boxes with varying sizes, colors, masses, and positions
 
 const countdownElement = document.getElementById("countdown");
-startCountdown(50, countdownElement);
+//startCountdown(50, countdownElement);
+startMatch();
 
 function checkGoal(carPosition, goalBox) {
   const { x, y, z } = carPosition;
@@ -102,7 +111,7 @@ function checkGoal(carPosition, goalBox) {
   ) {
     // Trigger end of game
     console.log("Goal reached! Race is over.");
-    // window.location.href = "../goal.html";
+    window.location.href = "../goal.html";
     // Add more actions here, like displaying an end screen or stopping the car
   }
 }
