@@ -4,7 +4,7 @@ import { sizes, handleResize } from "./setup/sizes.js";
 import { createRenderer } from "./setup/renderer.js";
 import { createControls } from "./setup/cameraControls.js";
 import { setupLights } from "./setup/lights.js";
-import { loadCubeTextures } from "./setup/skybox.js";
+import { loadCubeTextures, loadWrathbox } from "./setup/skybox.js";
 import { initPhysics } from "./setup/physics.js";
 import {
   setupFloor,
@@ -19,6 +19,7 @@ import { FollowCamera } from "./setup/followCamera.js"; // Import FollowCamera
 import * as CANNON from "cannon-es";
 import { drawSpeedo } from "./gameScreenUI/speedometer.js";
 import { startCountdown, startMatch } from "./gameScreenUI/timer.js";
+import { GLTFLoader } from "three/examples/jsm/Addons.js";
 
 // Canvas and Scene
 const canvas = document.querySelector("canvas.webgl");
@@ -59,6 +60,29 @@ scene.environment = loadCubeTextures();
 
 // Floor
 setupFloor(scene, world);
+
+// Initialize the GLTF loader
+const loader = new GLTFLoader();
+
+// Load the GLTF model
+loader.load(
+  "public/models/death.gltf", // Path to your GLTF model file
+  (gltf) => {
+    // Adjust model settings if needed (position, scale, rotation)
+    gltf.scene.position.set(0, 0, 400); // Set position
+    gltf.scene.scale.set(5, 5, 5); // Scale the model
+    scene.add(gltf.scene); // Add the model to the scene
+
+    // Optional: Log to check model's structure or debug
+    console.log("Model loaded", gltf.scene);
+  },
+  (xhr) => {
+    console.log(`Model ${(xhr.loaded / xhr.total) * 100}% loaded`);
+  },
+  (error) => {
+    console.error("An error occurred while loading the model", error);
+  }
+);
 
 const box3 = createBox({
   size: [50, 100, 200],
@@ -167,6 +191,8 @@ let lastCallTime;
 const countdownElement = document.getElementById("countdown");
 //startCountdown(50, countdownElement);
 startMatch();
+
+loadWrathbox(scene);
 
 // Create the goal box
 const goalBox = createGoalBox({
