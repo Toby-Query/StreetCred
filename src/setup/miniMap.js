@@ -19,6 +19,7 @@ export class MiniMap {
       1000
     );
     this.miniMapCamera.position.set(0, 50, 0); // Initial position above the scene
+    
     this.miniMapCamera.lookAt(0, 0, 0);
 
     // Set the minimap background
@@ -36,7 +37,7 @@ export class MiniMap {
 
     // Keep the minimap camera looking down at the scene
     this.miniMapCamera.lookAt(this.mainCamera.position.x, 0, this.mainCamera.position.z);
-
+    this.miniMapCamera.rotation.z=this.mainCamera.rotation.z;
     // Render the minimap scene
     this.miniMapRenderer.render(this.scene, this.miniMapCamera);
   }
