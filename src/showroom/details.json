@@ -41,14 +41,14 @@
     {
         "name":"McLaren P1",
         "logo":"/cars/mclaren_p1/mclaren.png",
-        "show_scale":[0.7,0.7,0.7],
-        "game_scale":[0.865,0.865,0.865],
-        "chassis_displacement":[0,0.125,0.5],
-        "wheel_scale":-1.35,
+        "show_scale":[0.55,0.55,0.55],
+        "game_scale":[0.78,0.78,0.78],
+        "chassis_displacement":[0,0.18,0],
+        "wheel_scale":1.2,
         "chassis_path":"/cars/mclaren_p1/chassis.gltf",
         "wheel_path":"/cars/mclaren_p1/wheel.gltf",
         "wheel_orientation":[-1,1,-1,1],
-        "game_wheels":[[-0.7,0.2,1.2],[0.68,0.2,1.2],[-0.68,0.2,-1.45],[0.68,0.2,-1.45]],
-        "wheel_positions":[[-0.56,0.27,0.98],[0.56,0.27,0.98],[-0.56,0.27,-1.19],[0.56,0.27,-1.19]]
+        "game_wheels":[[-0.65,0.15,-1.17],[0.65,0.15,-1.17],[-0.65,0.15,1.12],[0.65,0.15,1.12]],
+        "wheel_positions":[[-0.52,0.22,1.03],[0.515,0.22,1.03],[-0.52,0.22,-0.76],[0.515,0.22,-0.76]]
     }
 ]
