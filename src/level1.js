@@ -14,6 +14,8 @@ import { FollowCamera } from "./setup/followCamera.js"; // Import FollowCamera
 import * as CANNON from "cannon-es";
 import { drawSpeedo } from "./gameScreenUI/speedometer.js";
 import { preRaceCountdown, startCountdown } from "./gameScreenUI/timer.js";
+import { MiniMap } from "./setup/miniMap.js";
+
 
 // Canvas and Scene
 const canvas = document.querySelector("canvas.webgl");
@@ -249,6 +251,12 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
+
+
+// Create a mini-map
+const miniMapElement = document.getElementById('miniMap'); // Ensure you have a div with this ID in your HTML
+const miniMap = new MiniMap(miniMapElement, scene,camera);
+
 const tick = () => {
   stats.begin();
   controls.update();
@@ -288,6 +296,7 @@ const tick = () => {
   renderer.render(scene, camera);
   stats.end();
 
+  miniMap.update(camera);
   window.requestAnimationFrame(tick);
 };
 tick();
