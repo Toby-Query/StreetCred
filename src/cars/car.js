@@ -6,7 +6,7 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import details from "../showroom/details.json";
 import { preloadAudio, playAudio, pauseAudio } from "../setup/audioLoader";
 
-console.log(details);
+//console.log(details);
 var index = 0;
 let s = localStorage.getItem("StreetCredCar");
 if (s) {
