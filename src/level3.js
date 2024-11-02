@@ -6,16 +6,15 @@ import { createControls } from "./setup/cameraControls.js";
 import { setupLights } from "./setup/lights.js";
 import { loadCubeTextures } from "./setup/skybox.js";
 import { initPhysics } from "./setup/physics.js";
-import { setupFloor, createBox, createRamp } from "./buildWorld.js";
+import { setupFloor } from "./buildWorld.js";
 import stats from "./setup/stats.js";
 import Car from "./cars/car.js";
-import Car2 from "./cars/car2.js";
-import { FollowCamera } from "./setup/followCamera.js"; // Import FollowCamera
+import { FollowCamera } from "./setup/followCamera.js";
 import * as CANNON from "cannon-es";
 import { drawSpeedo } from "./gameScreenUI/speedometer.js";
 import { startCountdown, startMatch } from "./gameScreenUI/timer.js";
 
-// Canvas and Scene
+// Canvas and Scene setup
 const canvas = document.querySelector("canvas.webgl");
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(
@@ -26,126 +25,236 @@ const camera = new THREE.PerspectiveCamera(
 );
 camera.position.set(0, 4, 6);
 scene.add(camera);
-
-// Renderer
 const renderer = createRenderer(canvas, sizes);
 window.addEventListener("resize", () => handleResize(camera, renderer));
-
-// Controls
 const controls = createControls(camera, canvas);
-
-// Physics World
 const { world } = initPhysics(scene);
-
-// Car
 const car = new Car(scene, world);
-car.init({ x: -380, y: 55, z: 30 });
-
-// Car2
-// const car2 = new Car2(scene, world);
-// car2.setTarget({ x: -50, y: 0, z: 50 });
-// car2.init();
-
-// Lighting
+car.init();
 setupLights(scene);
-
-// Environment Textures
 scene.environment = loadCubeTextures();
-
-// Floor
 setupFloor(scene, world);
 
-const box3 = createBox({
-  size: [50, 100, 200],
-  color: 0x00ff00,
-  mass: 0,
-  position: [-375, 3, 105],
-  scene: scene,
-  world: world,
-});
-const box4 = createBox({
-  size: [3, 2, 390],
-  color: 0xff0000,
-  mass: 0,
-  position: [-375, 52, 400],
-  scene: scene,
-  world: world,
-});
-const box5 = createBox({
-  size: [50, 100, 200],
-  color: 0x00ff00,
-  mass: 0,
-  position: [-375, 3, 800 - 105],
-  scene: scene,
-  world: world,
-});
-
-// createRamp(scene, world);
-
 // Follow Camera
-const followCamera = new FollowCamera(camera); // Initialize with default offset
-
-// Animation Loop
-const timeStep = 1 / 60; // seconds
+const followCamera = new FollowCamera(camera);
+const timeStep = 1 / 60;
 let lastCallTime;
 
-// Usage example: Create a few boxes with varying sizes, colors, masses, and positions
-
+// Game variables
+let lapCount = 0;
+let isBoosting = false;
+let boostCooldown = false;
+let countdown = 3; // Countdown time in seconds
+let score = 0;
+const maxScore = 5; // Number of balls to score in goal area to win
 const countdownElement = document.getElementById("countdown");
-//startCountdown(50, countdownElement);
-startMatch();
 
-function checkGoal(carPosition, goalBox) {
-  const { x, y, z } = carPosition;
-  const halfX = goalBox.geometry.parameters.width / 2;
-  const halfY = goalBox.geometry.parameters.height / 2;
-  const halfZ = goalBox.geometry.parameters.depth / 2;
+// Texture loader for realistic textures
+const textureLoader = new THREE.TextureLoader();
+const sphereTexture = textureLoader.load("textures/environmentMaps/ny.png");
+const textureLoader2 = new THREE.TextureLoader(); // Replace with your texture file
+const wallTexture = textureLoader2.load(
+  "textures/wall/rustic_stone_wall_diff_4k.jpg"
+);
+wallTexture.wrapS = THREE.RepeatWrapping;
+wallTexture.wrapT = THREE.RepeatWrapping;
 
-  if (
-    x > goalBox.position.x - halfX &&
-    x < goalBox.position.x + halfX &&
-    y > goalBox.position.y - halfY &&
-    y < goalBox.position.y + halfY &&
-    z > goalBox.position.z - halfZ &&
-    z < goalBox.position.z + halfZ
-  ) {
-    // Trigger end of game
-    console.log("Goal reached! Race is over.");
-    window.location.href = "../goal.html";
-    // Add more actions here, like displaying an end screen or stopping the car
+// Set the repeat values (adjust these values based on your texture size and desired appearance)
+wallTexture.repeat.set(0.29, 0.2);
+// Function to create the walls around the play area
+function createWall({ size, position }) {
+  const wallGeometry = new THREE.BoxGeometry(...size);
+  const wallMaterial = new THREE.MeshStandardMaterial({
+    map: wallTexture, // Apply the texture to the material
+  });
+  const wallMesh = new THREE.Mesh(wallGeometry, wallMaterial);
+  wallMesh.position.set(...position);
+  scene.add(wallMesh);
+
+  const wallShape = new CANNON.Box(
+    new CANNON.Vec3(size[0] / 2, size[1] / 2, size[2] / 2)
+  );
+  const wallBody = new CANNON.Body({
+    mass: 0,
+    position: new CANNON.Vec3(...position),
+  });
+  wallBody.addShape(wallShape);
+  world.addBody(wallBody);
+}
+
+// Create the boundary walls around the play area
+// Define the play area size
+const playAreaSize = 100;
+
+// Create the boundary walls within the play area bounds
+createWall({
+  size: [playAreaSize, 5, 2],
+  position: [0, 2.5, playAreaSize / 2 - 0.5], // Adjusted position to fit within bounds
+});
+createWall({
+  size: [playAreaSize, 5, 2],
+  position: [0, 2.5, -playAreaSize / 2 + 50], // Adjusted position to fit within bounds
+});
+createWall({
+  size: [1, 5, playAreaSize],
+  position: [playAreaSize / 2 - 0.5, 2.5, 0], // Adjusted position to fit within bounds
+});
+createWall({
+  size: [1, 5, playAreaSize],
+  position: [-playAreaSize / 2 + 0.5, 2.5, 0], // Adjusted position to fit within bounds
+});
+
+// Create goal area
+// Create goal area within the existing play area
+const goalArea = new THREE.Mesh(
+  new THREE.CylinderGeometry(7, 7, 0.2, 32),
+  new THREE.MeshStandardMaterial({
+    color: 0x0000ff, // Change to blue
+    opacity: 0.8,
+    transparent: true,
+    roughness: 0.5,
+    metalness: 0.3,
+  })
+);
+goalArea.rotation.x = Math.PI / 2; // Rotate to lay flat
+goalArea.position.set(0, 0.1, -playAreaSize / 2 + 51);
+scene.add(goalArea);
+
+// Update physics body position for goal detection
+const goalBody = new CANNON.Body({
+  mass: 0,
+  position: new CANNON.Vec3(0, 0.1, -playAreaSize / 2 + 53),
+});
+goalBody.addShape(new CANNON.Box(new CANNON.Vec3(5, 0.1, 5)));
+world.addBody(goalBody);
+
+// Create sphere obstacles with texture and physics
+function createSphereObstacle({ radius, position, mass = 5, color }) {
+  const geometry = new THREE.SphereGeometry(radius, 32, 32);
+  const material = new THREE.MeshStandardMaterial({
+    map: sphereTexture,
+    color: color,
+  });
+  const sphere = new THREE.Mesh(geometry, material);
+
+  sphere.position.set(position[0], position[1], position[2]);
+  scene.add(sphere);
+
+  // Physics body with small mass for movement
+  const shape = new CANNON.Sphere(radius);
+  const body = new CANNON.Body({
+    mass: mass,
+    position: new CANNON.Vec3(position[0], position[1], position[2]),
+    material: new CANNON.Material({
+      friction: 0.3,
+      restitution: 0.8,
+    }),
+  });
+  body.addShape(shape);
+  world.addBody(body);
+
+  return { mesh: sphere, body };
+}
+
+// Obstacles array to hold spheres
+const obstacles = [];
+for (let i = 0; i < maxScore; i++) {
+  const obstacle = createSphereObstacle({
+    radius: 1,
+    color: 0xffffff,
+    position: [Math.random() * 30 - 0, 1, Math.random() * 30 - 0],
+  });
+  obstacles.push(obstacle);
+}
+
+// Countdown timer
+function startRaceCountdown() {
+  const interval = setInterval(() => {
+    countdownElement.innerText = countdown > 0 ? countdown : "Go!";
+    countdown--;
+
+    if (countdown < 0) {
+      clearInterval(interval);
+      startMatch();
+      countdownElement.style.display = "none";
+    }
+  }, 1000);
+}
+startRaceCountdown(); // Start countdown
+
+// Boost mechanic
+document.addEventListener("keydown", (event) => {
+  if (event.key === "b" && !boostCooldown) {
+    isBoosting = true;
+    boostCooldown = true;
+    setTimeout(() => {
+      isBoosting = false;
+    }, 1000); // Boost lasts for 1 second
+
+    setTimeout(() => {
+      boostCooldown = false; // Cooldown lasts for 3 seconds
+    }, 3000);
+  }
+});
+
+// Check if a ball enters the goal area
+// Global variable to keep track of scored obstacles
+let scoredObstaclesCount = 0;
+let scoreDisplay = document.getElementById("scoreDisplay");
+
+// Check if a ball enters the goal area
+function checkGoal(obstacle) {
+  const distanceToGoal = obstacle.body.position.distanceTo(goalBody.position);
+  if (distanceToGoal < 5) {
+    score++;
+    scoredObstaclesCount++; // Increment scored count
+    console.log(`Score: ${score}`);
+    scoreDisplay.textContent = `Score: ${scoredObstaclesCount}`;
+
+    // Remove the scored obstacle from the scene and world
+    scene.remove(obstacle.mesh);
+    world.removeBody(obstacle.body);
+
+    // Check if all balls have been scored
+    if (scoredObstaclesCount >= maxScore) {
+      console.log("Game Over! You scored all the balls!");
+      // Implement any game over logic here, like stopping the game loop
+      window.location.href = "../goal.html";
+      // You could also add UI elements to display the game over screen
+    } else {
+      // Reset ball position if not all scored
+      obstacle.body.position.set(
+        Math.random() * 30 - 15,
+        1,
+        Math.random() * 30 - 15
+      );
+      obstacle.body.velocity.set(0, 0, 0);
+    }
   }
 }
 
-let isEditMode = false;
-
-document.addEventListener("keydown", (event) => {
-  if (event.key === "e") {
-    isEditMode = true; // Enter edit mode
-    controls.enabled = true; // Enable orbit or other controls for editing
-  } else if (event.key === "p") {
-    isEditMode = false; // Enter play mode
-    controls.enabled = false; // Disable editing controls in play mode
-  }
-});
-
-startMatch();
-
+// Game loop
 const tick = () => {
   stats.begin();
   controls.update();
 
-  const time = performance.now() / 1000; // seconds
+  const time = performance.now() / 1000;
   const dt = lastCallTime ? time - lastCallTime : timeStep;
   world.step(timeStep, dt);
   lastCallTime = time;
 
-  // Retrieve car speed and update speedometer
-  const carSpeed = car.getSpeed(); // Assume car.getSpeed() returns speed value
-  const carGear = car.getGear(); // Assume car.getGear() returns current gear
-  const carRpm = car.getRpm(); // Assume car.getRpm() returns RPM value
-  drawSpeedo(carSpeed, carGear, carRpm, 160, car.isReverse); // Update speedometer display
+  // Apply boost speed if active
+  if (isBoosting) {
+    car.accelerate(10); // Increase speed temporarily
+  }
 
-  // Car position and quaternion
+  // Retrieve car speed and update speedometer
+  const carSpeed = car.getSpeed();
+  const carGear = car.getGear();
+  const carRpm = car.getRpm();
+  drawSpeedo(carSpeed, carGear, carRpm, 160, car.isReverse);
+
+  // Update car position and quaternion
   const carPosition = new THREE.Vector3(
     car.car.chassisBody.position.x,
     car.car.chassisBody.position.y,
@@ -158,11 +267,17 @@ const tick = () => {
     car.car.chassisBody.quaternion.w
   );
 
-  if (!isEditMode) followCamera.update(carPosition, carQuaternion);
+  followCamera.update(carPosition, carQuaternion);
+
+  // Update obstacles and check if they are in the goal
+  obstacles.forEach((obstacle) => {
+    obstacle.mesh.position.copy(obstacle.body.position);
+    obstacle.mesh.quaternion.copy(obstacle.body.quaternion);
+    checkGoal(obstacle);
+  });
 
   renderer.render(scene, camera);
   stats.end();
-
   window.requestAnimationFrame(tick);
 };
 tick();

@@ -36,6 +36,17 @@
         font-size: 6rem;
         background-color: rgba(0, 0, 0, 0.5);
         border-radius: 50%;
+        z-index: 1; /* Ensure it appears above other elements */
+      }
+
+      #scoreDisplay {
+        position: absolute;
+        top: 50%; /* Center vertically */
+        left: 60px; /* Positioning from the left */
+        transform: translateY(-50%); /* Adjust for centering */
+        font-size: 2rem; /* Adjust the font size */
+        color: white; /* Adjust color for visibility */
+        z-index: 1; /* Ensure it appears above other elements */
       }
     </style>
     <link rel="stylesheet" href="src/timer.css" />
@@ -49,8 +60,11 @@
     <!-- HTML Element to display the countdown -->
     <div id="countdown"></div>
 
+    <!-- HTML Element to display the score -->
+    <div id="scoreDisplay">Score: 0</div>
+    <!-- Score display -->
+
     <!-- Import the compiled JavaScript file -->
-    <!-- <script src="/src/speedometer.js"></script> -->
     <script src="/src/level3.js" type="module"></script>
   </body>
 </html>
