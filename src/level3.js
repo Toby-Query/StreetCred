@@ -6,7 +6,7 @@ import { createControls } from "./setup/cameraControls.js";
 import { setupLights } from "./setup/lights.js";
 import { loadCubeTextures } from "./setup/skybox.js";
 import { initPhysics } from "./setup/physics.js";
-import { setupFloor, createBox } from "./buildWorld.js";
+import { setupFloor, createBox, createRamp } from "./buildWorld.js";
 import stats from "./setup/stats.js";
 import Car from "./cars/car.js";
 import Car2 from "./cars/car2.js";
@@ -39,7 +39,7 @@ const { world } = initPhysics(scene);
 
 // Car
 const car = new Car(scene, world);
-car.init();
+car.init({ x: 2, y: 55, z: 30 });
 
 // Car2
 // const car2 = new Car2(scene, world);
@@ -56,21 +56,23 @@ scene.environment = loadCubeTextures();
 setupFloor(scene, world);
 
 const box3 = createBox({
-  size: [1, 6, 210],
+  size: [50, 100, 200],
   color: 0x00ff00,
   mass: 0,
-  position: [-5, 3, 105],
+  position: [-30, 3, 105],
   scene: scene,
   world: world,
 });
 const box4 = createBox({
-  size: [1, 6, 190],
-  color: 0x00ff00,
+  size: [4, 90, 190],
+  color: 0xff0000,
   mass: 0,
-  position: [5, 3, 105],
+  position: [5, 3, 250],
   scene: scene,
   world: world,
 });
+
+// createRamp(scene, world);
 
 // Follow Camera
 const followCamera = new FollowCamera(camera); // Initialize with default offset
@@ -100,7 +102,7 @@ function checkGoal(carPosition, goalBox) {
   ) {
     // Trigger end of game
     console.log("Goal reached! Race is over.");
-    window.location.href = "../goal.html";
+    // window.location.href = "../goal.html";
     // Add more actions here, like displaying an end screen or stopping the car
   }
 }

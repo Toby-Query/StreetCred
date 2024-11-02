@@ -82,10 +82,13 @@ export default class Car {
     return this.engineRpm / 1000;
   }
 
-  async init() {
+  async init(
+    position = { x: -2, y: 2, z: 20 },
+    rotation = { x: 0, y: 0, z: 0 }
+  ) {
     this.loadModels();
     this.setChassis();
-    this.setInitialPosition({ x: -2, y: 2, z: 20 }, { x: 0, y: 0, z: 0 }); // Set initial position here
+    this.setInitialPosition(position, rotation); // Set initial position here
     this.setWheels();
     await preloadAudio().then(() => {
       console.log("Audio loaded and ready to play.");
