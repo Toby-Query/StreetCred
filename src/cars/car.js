@@ -3,16 +3,18 @@ import * as CANNON from "cannon-es";
 import { matchStarted } from "../gameScreenUI/timer";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
-import details from '../showroom/details.json';
+import details from "../showroom/details.json";
+import { preloadAudio, playAudio, pauseAudio } from "../setup/audioLoader";
+
 console.log(details);
-var index=0;
-let s=localStorage.getItem("StreetCredCar");
-if (s){
-    console.log(s);
-    index=parseInt(s);
-    if (!index){
-        index=0;
-    }
+var index = 0;
+let s = localStorage.getItem("StreetCredCar");
+if (s) {
+  console.log(s);
+  index = parseInt(s);
+  if (!index) {
+    index = 0;
+  }
 }
 export default class Car {
   constructor(scene, world) {
@@ -37,6 +39,10 @@ export default class Car {
       hindWheel: 0.67,
     };
     this.mass = 250;
+    this.accelerateSource = null;
+    this.isAcceleratePlaying = false;
+    this.brakeSource = null;
+    this.isBrakePlaying = false;
   }
 
   // Method to get current speed in miles per hour
@@ -76,11 +82,14 @@ export default class Car {
     return this.engineRpm / 1000;
   }
 
-  init() {
+  async init() {
     this.loadModels();
     this.setChassis();
     this.setInitialPosition({ x: -2, y: 2, z: 20 }, { x: 0, y: 0, z: 0 }); // Set initial position here
     this.setWheels();
+    await preloadAudio().then(() => {
+      console.log("Audio loaded and ready to play.");
+    });
     this.controls();
     this.update();
   }
@@ -96,7 +105,11 @@ export default class Car {
 
     gltfLoader.load(details[index].chassis_path, (gltf) => {
       this.chassis = gltf.scene;
-      this.chassis.scale.set(details[index].game_scale[0],details[index].game_scale[1],details[index].game_scale[2]);
+      this.chassis.scale.set(
+        details[index].game_scale[0],
+        details[index].game_scale[1],
+        details[index].game_scale[2]
+      );
       this.chassis.castShadow = true; // Enable shadow casting
       this.chassis.receiveShadow = true; // Enable shadow receiving
       this.scene.add(this.chassis);
@@ -107,24 +120,24 @@ export default class Car {
       gltfLoader.load(details[index].wheel_path, (gltf) => {
         const model = gltf.scene;
         model.scale.set(
-          details[index].game_scale[0]*details[index].wheel_scale,
-          details[index].game_scale[1]*details[index].wheel_scale,
-          details[index].game_scale[2]*details[index].wheel_scale
+          details[index].game_scale[0] * details[index].wheel_scale,
+          details[index].game_scale[1] * details[index].wheel_scale,
+          details[index].game_scale[2] * details[index].wheel_scale
         );
         model.castShadow = true; // Enable shadow casting for each wheel
         model.receiveShadow = true; // Enable shadow receiving for each wheel
         this.wheels[i] = model;
         if (i === 1 || i === 3)
           this.wheels[i].scale.set(
-            -1 * this.wheelScale.frontWheel*details[index].wheel_scale,
-            1 * this.wheelScale.frontWheel*details[index].wheel_scale,
-            -1 * this.wheelScale.frontWheel*details[index].wheel_scale
+            -1 * this.wheelScale.frontWheel * details[index].wheel_scale,
+            1 * this.wheelScale.frontWheel * details[index].wheel_scale,
+            -1 * this.wheelScale.frontWheel * details[index].wheel_scale
           );
         else
           this.wheels[i].scale.set(
-            1 * this.wheelScale.frontWheel*details[index].wheel_scale,
-            1 * this.wheelScale.frontWheel*details[index].wheel_scale,
-            1 * this.wheelScale.frontWheel*details[index].wheel_scale
+            1 * this.wheelScale.frontWheel * details[index].wheel_scale,
+            1 * this.wheelScale.frontWheel * details[index].wheel_scale,
+            1 * this.wheelScale.frontWheel * details[index].wheel_scale
           );
         this.scene.add(this.wheels[i]);
       });
@@ -168,8 +181,8 @@ export default class Car {
       rollInfluence: 0.01,
       axleLocal: new CANNON.Vec3(-1, 0, 0),
       chassisConnectionPointLocal: new CANNON.Vec3(
-        details[index].game_wheels[0][0], 
-        details[index].game_wheels[0][1], 
+        details[index].game_wheels[0][0],
+        details[index].game_wheels[0][1],
         details[index].game_wheels[0][2]
       ),
       maxSuspensionTravel: 1,
@@ -187,8 +200,8 @@ export default class Car {
       rollInfluence: 0.01,
       axleLocal: new CANNON.Vec3(-1, 0, 0),
       chassisConnectionPointLocal: new CANNON.Vec3(
-        details[index].game_wheels[1][0], 
-        details[index].game_wheels[1][1], 
+        details[index].game_wheels[1][0],
+        details[index].game_wheels[1][1],
         details[index].game_wheels[1][2]
       ),
       maxSuspensionTravel: 1,
@@ -206,8 +219,8 @@ export default class Car {
       rollInfluence: 0.01,
       axleLocal: new CANNON.Vec3(-1, 0, 0),
       chassisConnectionPointLocal: new CANNON.Vec3(
-        details[index].game_wheels[2][0], 
-        details[index].game_wheels[2][1], 
+        details[index].game_wheels[2][0],
+        details[index].game_wheels[2][1],
         details[index].game_wheels[2][2]
       ),
       maxSuspensionTravel: 1,
@@ -225,8 +238,8 @@ export default class Car {
       rollInfluence: 0.01,
       axleLocal: new CANNON.Vec3(-1, 0, 0),
       chassisConnectionPointLocal: new CANNON.Vec3(
-        details[index].game_wheels[3][0], 
-        details[index].game_wheels[3][1], 
+        details[index].game_wheels[3][0],
+        details[index].game_wheels[3][1],
         details[index].game_wheels[3][2]
       ),
       maxSuspensionTravel: 1,
@@ -273,7 +286,7 @@ export default class Car {
     this.car.chassisBody.angularVelocity.set(0, 0, 0);
   }
 
-  controls() {
+  async controls() {
     const maxSteerVal = 0.5;
     const maxForce = 750;
     const brakeForce = 36;
@@ -320,10 +333,36 @@ export default class Car {
       this.car.setBrake(slowDownCar, 3);
     };
 
+    const playEngineSound = () => {
+      if (!this.isAcceleratePlaying) {
+        this.accelerateSource = playAudio("accelerate");
+        this.isAcceleratePlaying = true;
+      }
+    };
+    const pauseEngineSound = () => {
+      if (this.isAcceleratePlaying) {
+        pauseAudio(this.accelerateSource);
+        this.isAcceleratePlaying = false;
+      }
+    };
+    const playBrakeSound = () => {
+      if (!this.isBrakePlaying) {
+        this.brakeSource = playAudio("brake");
+        this.isBrakePlaying = true;
+      }
+    };
+    const pauseBrakeSound = () => {
+      if (this.isBrakePlaying) {
+        pauseAudio(this.brakeSource);
+        this.isBrakePlaying = false;
+      }
+    };
+
     const hindMovement = () => {
       if (keysPressed.includes("r") || keysPressed.includes("r")) resetCar();
 
       if (!keysPressed.includes(" ") && !keysPressed.includes(" ")) {
+        pauseBrakeSound();
         this.car.setBrake(0, 0);
         this.car.setBrake(0, 1);
         this.car.setBrake(0, 2);
@@ -340,19 +379,32 @@ export default class Car {
           } else stopSteer();
 
           if (keysPressed.includes("arrowup")) {
+            if (this.getSpeed() > 30) playEngineSound();
             this.isReverse = false;
             this.car.applyEngineForce(maxForce * -1, 0);
             this.car.applyEngineForce(maxForce * -1, 1);
             this.car.applyEngineForce(maxForce * -1, 2);
             this.car.applyEngineForce(maxForce * -1, 3);
-          } else if (keysPressed.includes("arrowdown")){
+          } else if (keysPressed.includes("arrowdown")) {
+            pauseEngineSound();
             this.isReverse = true;
             this.car.applyEngineForce(maxForce * 1, 0);
             this.car.applyEngineForce(maxForce * 1, 1);
             this.car.applyEngineForce(maxForce * 1, 2);
             this.car.applyEngineForce(maxForce * 1, 3);
-          } else stopCar();
-        } else brake();
+          } else {
+            pauseEngineSound();
+            stopCar();
+          }
+        } else {
+          pauseEngineSound();
+          //playBrakeSound();
+          brake();
+        }
+      } else {
+        pauseEngineSound();
+        playBrakeSound();
+        brake();
       }
     };
   }

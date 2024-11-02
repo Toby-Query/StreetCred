@@ -146,7 +146,6 @@
           "Are you trying to beat the God of speed with speed?",
           "Should have stayed in varsity, kid",
           "At this rate you'll never get him back.",
-          
         ];
   
         // Function to select a random quote
@@ -157,7 +156,7 @@
 
         //restart should redirect to index.html
         document.getElementById('start-race').addEventListener('click', () => {
-          window.location.href = '../level1.html';
+          window.history.go(-1);
         });
       </script>
   </body>
