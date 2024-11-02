@@ -4,7 +4,7 @@ import { sizes, handleResize } from "./setup/sizes.js";
 import { createRenderer } from "./setup/renderer.js";
 import { createControls } from "./setup/cameraControls.js";
 import { setupLights } from "./setup/lights.js";
-import { loadCubeTextures, loadSkybox } from "./setup/skybox.js";
+import { loadCubeTextures, loadSkybox,loadSkybox2 } from "./setup/skybox.js";
 import { initPhysics } from "./setup/physics.js";
 import { setupFloor, createBox, createGoalBox } from "./buildWorld.js";
 import stats from "./setup/stats.js";
@@ -44,7 +44,7 @@ scene.environment = loadCubeTextures();
 
 // Floor and Skybox
 setupFloor(scene, world);
-loadSkybox(scene);
+loadSkybox2(scene);
 
 const textureLoaders = new THREE.TextureLoader();
 const texture = textureLoaders.load(
