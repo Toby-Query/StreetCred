@@ -6,7 +6,7 @@ import { createControls } from "./setup/cameraControls.js";
 import { setupLights } from "./setup/lights.js";
 import { loadCubeTextures } from "./setup/skybox.js";
 import { initPhysics } from "./setup/physics.js";
-import { setupFloor, createBox } from "./buildWorld.js";
+import { setupFloor, createBox, createRamp } from "./buildWorld.js";
 import stats from "./setup/stats.js";
 import Car from "./cars/car.js";
 import Car2 from "./cars/car2.js";
@@ -39,7 +39,7 @@ const { world } = initPhysics(scene);
 
 // Car
 const car = new Car(scene, world);
-car.init();
+car.init({ x: -380, y: 55, z: 30 });
 
 // Car2
 // const car2 = new Car2(scene, world);
@@ -56,21 +56,31 @@ scene.environment = loadCubeTextures();
 setupFloor(scene, world);
 
 const box3 = createBox({
-  size: [1, 6, 210],
+  size: [50, 100, 200],
   color: 0x00ff00,
   mass: 0,
-  position: [-5, 3, 105],
+  position: [-375, 3, 105],
   scene: scene,
   world: world,
 });
 const box4 = createBox({
-  size: [1, 6, 190],
-  color: 0x00ff00,
+  size: [3, 2, 390],
+  color: 0xff0000,
   mass: 0,
-  position: [5, 3, 105],
+  position: [-375, 52, 400],
   scene: scene,
   world: world,
 });
+const box5 = createBox({
+  size: [50, 100, 200],
+  color: 0x00ff00,
+  mass: 0,
+  position: [-375, 3, 800 - 105],
+  scene: scene,
+  world: world,
+});
+
+// createRamp(scene, world);
 
 // Follow Camera
 const followCamera = new FollowCamera(camera); // Initialize with default offset
@@ -82,7 +92,8 @@ let lastCallTime;
 // Usage example: Create a few boxes with varying sizes, colors, masses, and positions
 
 const countdownElement = document.getElementById("countdown");
-startCountdown(50, countdownElement);
+//startCountdown(50, countdownElement);
+startMatch();
 
 function checkGoal(carPosition, goalBox) {
   const { x, y, z } = carPosition;

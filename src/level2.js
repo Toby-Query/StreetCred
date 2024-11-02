@@ -4,7 +4,7 @@ import { sizes, handleResize } from "./setup/sizes.js";
 import { createRenderer } from "./setup/renderer.js";
 import { createControls } from "./setup/cameraControls.js";
 import { setupLights } from "./setup/lights.js";
-import { loadCubeTextures, loadSkybox } from "./setup/skybox.js";
+import { loadCubeTextures, loadSkybox,loadSkybox2 } from "./setup/skybox.js";
 import { initPhysics } from "./setup/physics.js";
 import { setupFloor, createBox, createGoalBox } from "./buildWorld.js";
 import stats from "./setup/stats.js";
@@ -44,7 +44,7 @@ scene.environment = loadCubeTextures();
 
 // Floor and Skybox
 setupFloor(scene, world);
-loadSkybox(scene);
+loadSkybox2(scene);
 
 const textureLoaders = new THREE.TextureLoader();
 const texture = textureLoaders.load(
@@ -59,18 +59,18 @@ texture.repeat.set(30, 3); // Apply texture scaling
 // Load texture for obstacles
 const textureLoader = new THREE.TextureLoader();
 const obstacleTextureStatic = textureLoader.load("textures/environmentMaps/rock.png");
-const obstacleTextureMoving = textureLoader.load("textures/environmentMaps/rock.png"); // Different texture or color
+const obstacleTextureMoving = textureLoader.load("textures/environmentMaps/rock.jpg"); // Different texture or color
 
 // Function to create a static obstacle with a unique color
-function createObstacle({ size, position, world, scene }) {
-  const boxGeometry = new THREE.BoxGeometry(...size);
-  const material = new THREE.MeshStandardMaterial({ map: obstacleTextureStatic, color: 0xff0000 }); // Red color for static obstacles
-  const mesh = new THREE.Mesh(boxGeometry, material);
+function createSphericalObstacle({ radius, position, world, scene }) {
+  const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
+  const material = new THREE.MeshStandardMaterial({ map: obstacleTextureStatic}); // Red color for static obstacles
+  const mesh = new THREE.Mesh(sphereGeometry, material);
   mesh.position.set(...position);
   scene.add(mesh);
 
   // Create physics body
-  const shape = new CANNON.Box(new CANNON.Vec3(size[0] / 2, size[1] / 2, size[2] / 2));
+  const shape = new CANNON.Sphere(radius);
   const body = new CANNON.Body({ mass: 0 }); // Static obstacle
   body.addShape(shape);
   body.position.set(...position);
@@ -79,25 +79,27 @@ function createObstacle({ size, position, world, scene }) {
   return { mesh, body };
 }
 
+
+
 // Create static obstacles
 const obstacles = [
-  createObstacle({ size: [3, 3, 3], position: [3, 1, 150], world, scene }),
-  createObstacle({ size: [2, 2, 2], position: [-3, 1, 200], world, scene }),
-  createObstacle({ size: [4, 4, 4], position: [2, 1, 300], world, scene }),
-  createObstacle({ size: [1.5, 1.5, 1.5], position: [-2, 1, 400], world, scene }),
-  createObstacle({ size: [2, 2, 2], position: [0, 1, 500], world, scene })
+  createSphericalObstacle({ radius: 1.5, position: [3, 1, 150], world, scene }),
+  createSphericalObstacle({ radius: 1, position: [-3, 1, 200], world, scene }),
+  createSphericalObstacle({ radius: 2, position: [2, 1, 300], world, scene }),
+  createSphericalObstacle({ radius: 0.75, position: [-2, 1, 400], world, scene }),
+  createSphericalObstacle({ radius: 1, position: [0, 1, 500], world, scene })
 ];
 
 // Function to create a moving obstacle with a unique color
-function createMovingObstacle({ size, startPosition, endPosition, speed, world, scene }) {
-  const boxGeometry = new THREE.BoxGeometry(...size);
-  const material = new THREE.MeshStandardMaterial({ map: obstacleTextureMoving, color: 0x00ff00 }); // Green color for moving obstacles
-  const mesh = new THREE.Mesh(boxGeometry, material);
+function createMovingSphericalObstacle({ radius, startPosition, endPosition, speed, world, scene }) {
+  const sphereGeometry = new THREE.SphereGeometry(radius, 32, 32);
+  const material = new THREE.MeshStandardMaterial({ map: obstacleTextureMoving }); // Green color for moving obstacles
+  const mesh = new THREE.Mesh(sphereGeometry, material);
   mesh.position.set(...startPosition);
   scene.add(mesh);
 
   // Physics body
-  const shape = new CANNON.Box(new CANNON.Vec3(size[0] / 2, size[1] / 2, size[2] / 2));
+  const shape = new CANNON.Sphere(radius);
   const body = new CANNON.Body({ mass: 0 }); // Static obstacle
   body.addShape(shape);
   body.position.set(...startPosition);
@@ -120,38 +122,37 @@ function createMovingObstacle({ size, startPosition, endPosition, speed, world, 
 
 
 
-
 // Create moving obstacles
 const movingObstacles = [
-  createMovingObstacle({
-    size: [2, 2, 2],
+  createMovingSphericalObstacle({
+    radius: 1,
     startPosition: [0, 1, 100],
     endPosition: [5, 1, 100],
-    speed: 0.05,
+    speed: 0.08, // Increased speed
     world,
     scene
   }),
-  createMovingObstacle({
-    size: [2, 2, 2],
+  createMovingSphericalObstacle({
+    radius: 1,
     startPosition: [-5, 1, 200],
-    endPosition: [5, 1, 200],
-    speed: 0.04,
+    endPosition: [10, 1, 200],
+    speed: 0.07, // Increased speed
     world,
     scene
   }),
-  createMovingObstacle({
-    size: [2, 2, 2],
+  createMovingSphericalObstacle({
+    radius: 1,
     startPosition: [-5, 1, 300],
-    endPosition: [5, 1, 300],
-    speed: 0.03,
+    endPosition: [10, 1, 300],
+    speed: 0.06, // Increased speed
     world,
     scene
   }),
-  createMovingObstacle({
-    size: [2, 2, 2],
+  createMovingSphericalObstacle({
+    radius: 1,
     startPosition: [-5, 1, 400],
-    endPosition: [5, 1, 400],
-    speed: 0.06,
+    endPosition: [10, 1, 400],
+    speed: 0.09, // Increased speed
     world,
     scene
   })
@@ -166,7 +167,7 @@ function setupCollisionDetection(car, staticObstacles, movingObstacles) {
       if (event.body === obstacle.body) {
         hasCollided = true;
         console.log("Collision detected with obstacle! Game Over.");
-        window.location.href = "../lose.html";
+        window.location.href = "../houndsHtml/lose5.html";
       }
     });
   });
@@ -176,15 +177,54 @@ function setupCollisionDetection(car, staticObstacles, movingObstacles) {
 setupCollisionDetection(car, obstacles, movingObstacles);
 
 // Boundary Walls// Current boundary walls
-createBox({ size: [1, 50, 1500], color: 0x32CD32, texture: texture, mass: 0, position: [10, 5, 0], scene, world });
-createBox({ size: [1, 50, 1500], color: 0x32CD32, texture: texture, mass: 0, position: [-10, 5, 0], scene, world }); // Adjusted to -10 for left boundary
-createBox({ size: [20, 50, 1], color: 0x32CD32, texture: texture, mass: 0, position: [0, 5, -100], scene, world }); // Adjusted width of the road
+// Boundary Walls
+// Adjusted Side Walls
+createBox({
+  size: [1, 50, 1500],    // Thickness, height, length
+  color: 0x32CD32,
+  texture: texture,
+  mass: 0,
+  position: [10, 5, 0],    // Right side
+  scene,
+  world,
+});
+createBox({
+  size: [1, 50, 1500],
+  color: 0x32CD32,
+  texture: texture,
+  mass: 0,
+  position: [-10, 5, 0],   // Left side
+  scene,
+  world,
+});
+
+// New Front and Back Walls to Close the Road
+createBox({
+  size: [20, 50, 1],      // Width, height, thickness
+  color: 0x32CD32,
+  texture: texture,
+  mass: 0,
+  position: [0, 5, -750], // Position the wall at the front (start of the road)
+  scene,
+  world,
+});
+
+createBox({
+  size: [20, 50, 1],
+  color: 0x32CD32,
+  texture: texture,
+  mass: 0,
+  position: [0, 5, 750],  // Position the wall at the back (end of the road)
+  scene,
+  world,
+});
+ // Adjusted width of the road
 
 // Goal Box
 const goalBox = createGoalBox({
   size: [10, 10, 1],
   color: 0x0000ff,
-  position: [0, 5, 800],
+  position: [0, 5, 650],
   scene: scene,
   label: "GOAL",
 });
@@ -194,7 +234,7 @@ const followCamera = new FollowCamera(camera);
 
 // Countdown
 const countdownElement = document.getElementById("countdown");
-startCountdown(90, countdownElement);
+startCountdown(30, countdownElement);
 
 // Check if car reaches goal
 function checkGoal(carPosition, goalBox) {
@@ -233,7 +273,7 @@ startMatch();
 
 // Set up win condition timer
 let startTime = Date.now();
-const winConditionTime = 90 * 1000; // 1 minute 30 seconds in milliseconds
+const winConditionTime = 30 * 1000; // 1 minute 30 seconds in milliseconds
 
 // Animation Loop with Win Condition Check
 const timeStep = 1 / 60;
