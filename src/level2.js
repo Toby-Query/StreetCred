@@ -134,7 +134,7 @@ const movingObstacles = [
   createMovingObstacle({
     size: [2, 2, 2],
     startPosition: [-5, 1, 200],
-    endPosition: [5, 1, 200],
+    endPosition: [10, 1, 200],
     speed: 0.04,
     world,
     scene
@@ -142,7 +142,7 @@ const movingObstacles = [
   createMovingObstacle({
     size: [2, 2, 2],
     startPosition: [-5, 1, 300],
-    endPosition: [5, 1, 300],
+    endPosition: [10, 1, 300],
     speed: 0.03,
     world,
     scene
@@ -150,7 +150,7 @@ const movingObstacles = [
   createMovingObstacle({
     size: [2, 2, 2],
     startPosition: [-5, 1, 400],
-    endPosition: [5, 1, 400],
+    endPosition: [10, 1, 400],
     speed: 0.06,
     world,
     scene
@@ -166,7 +166,7 @@ function setupCollisionDetection(car, staticObstacles, movingObstacles) {
       if (event.body === obstacle.body) {
         hasCollided = true;
         console.log("Collision detected with obstacle! Game Over.");
-        window.location.href = "../lose.html";
+        window.location.href = "../houndsHtml/lose5.html";
       }
     });
   });
@@ -194,7 +194,7 @@ const followCamera = new FollowCamera(camera);
 
 // Countdown
 const countdownElement = document.getElementById("countdown");
-startCountdown(90, countdownElement);
+startCountdown(40, countdownElement);
 
 // Check if car reaches goal
 function checkGoal(carPosition, goalBox) {
@@ -233,7 +233,7 @@ startMatch();
 
 // Set up win condition timer
 let startTime = Date.now();
-const winConditionTime = 90 * 1000; // 1 minute 30 seconds in milliseconds
+const winConditionTime = 40 * 1000; // 1 minute 30 seconds in milliseconds
 
 // Animation Loop with Win Condition Check
 const timeStep = 1 / 60;
