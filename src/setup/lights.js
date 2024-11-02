@@ -24,6 +24,6 @@ export function setupLights(scene) {
   light.shadow.camera.far = 1000;
 
   // Optional: visualize the shadow camera to see the area covered
-  const shadowHelper = new THREE.CameraHelper(light.shadow.camera);
-  scene.add(shadowHelper);
+  // const shadowHelper = new THREE.CameraHelper(light.shadow.camera);
+  // scene.add(shadowHelper);
 }

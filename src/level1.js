@@ -16,7 +16,6 @@ import { drawSpeedo } from "./gameScreenUI/speedometer.js";
 import { preRaceCountdown, startCountdown } from "./gameScreenUI/timer.js";
 import { MiniMap } from "./setup/miniMap.js";
 
-
 // Canvas and Scene
 const canvas = document.querySelector("canvas.webgl");
 const scene = new THREE.Scene();
@@ -71,10 +70,11 @@ const textureLoader = new THREE.TextureLoader();
 const texture = textureLoader.load(
   "public/textures/wall/rustic_stone_wall_diff_4k.jpg"
 );
+
 // Set the texture's repeat properties
 texture.wrapS = THREE.RepeatWrapping;
 texture.wrapT = THREE.RepeatWrapping;
-texture.repeat.set(30, 3); // Apply texture scaling
+texture.repeat.set(35, 3); // Apply texture scaling
 
 // Usage example: Create a few boxes with varying sizes, colors, masses, and positions
 const box3 = createBox({
@@ -251,11 +251,9 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-
-
 // Create a mini-map
-const miniMapElement = document.getElementById('miniMap'); // Ensure you have a div with this ID in your HTML
-const miniMap = new MiniMap(miniMapElement, scene,camera);
+const miniMapElement = document.getElementById("miniMap"); // Ensure you have a div with this ID in your HTML
+const miniMap = new MiniMap(miniMapElement, scene, camera);
 
 const tick = () => {
   stats.begin();
