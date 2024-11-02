@@ -3,7 +3,17 @@ import * as CANNON from "cannon-es";
 import { matchStarted } from "../gameScreenUI/timer";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
-
+import details from '../showroom/details.json';
+console.log(details);
+var index=0;
+let s=localStorage.getItem("StreetCredCar");
+if (s){
+    console.log(s);
+    index=parseInt(s);
+    if (!index){
+        index=0;
+    }
+}
 export default class Car {
   constructor(scene, world) {
     this.scene = scene;
@@ -84,8 +94,9 @@ export default class Car {
 
     gltfLoader.setDRACOLoader(dracoLoader);
 
-    gltfLoader.load("./car/chassis.gltf", (gltf) => {
+    gltfLoader.load(details[index].chassis_path, (gltf) => {
       this.chassis = gltf.scene;
+      this.chassis.scale.set(details[index].game_scale[0],details[index].game_scale[1],details[index].game_scale[2]);
       this.chassis.castShadow = true; // Enable shadow casting
       this.chassis.receiveShadow = true; // Enable shadow receiving
       this.scene.add(this.chassis);
@@ -93,22 +104,27 @@ export default class Car {
 
     this.wheels = [];
     for (let i = 0; i < 4; i++) {
-      gltfLoader.load("./car/wheel.gltf", (gltf) => {
+      gltfLoader.load(details[index].wheel_path, (gltf) => {
         const model = gltf.scene;
+        model.scale.set(
+          details[index].game_scale[0]*details[index].wheel_scale,
+          details[index].game_scale[1]*details[index].wheel_scale,
+          details[index].game_scale[2]*details[index].wheel_scale
+        );
         model.castShadow = true; // Enable shadow casting for each wheel
         model.receiveShadow = true; // Enable shadow receiving for each wheel
         this.wheels[i] = model;
         if (i === 1 || i === 3)
           this.wheels[i].scale.set(
-            -1 * this.wheelScale.frontWheel,
-            1 * this.wheelScale.frontWheel,
-            -1 * this.wheelScale.frontWheel
+            -1 * this.wheelScale.frontWheel*details[index].wheel_scale,
+            1 * this.wheelScale.frontWheel*details[index].wheel_scale,
+            -1 * this.wheelScale.frontWheel*details[index].wheel_scale
           );
         else
           this.wheels[i].scale.set(
-            1 * this.wheelScale.frontWheel,
-            1 * this.wheelScale.frontWheel,
-            1 * this.wheelScale.frontWheel
+            1 * this.wheelScale.frontWheel*details[index].wheel_scale,
+            1 * this.wheelScale.frontWheel*details[index].wheel_scale,
+            1 * this.wheelScale.frontWheel*details[index].wheel_scale
           );
         this.scene.add(this.wheels[i]);
       });
@@ -151,7 +167,11 @@ export default class Car {
       maxSuspensionForce: 10000,
       rollInfluence: 0.01,
       axleLocal: new CANNON.Vec3(-1, 0, 0),
-      chassisConnectionPointLocal: new CANNON.Vec3(0.75, 0.1, -1.32),
+      chassisConnectionPointLocal: new CANNON.Vec3(
+        details[index].game_wheels[0][0], 
+        details[index].game_wheels[0][1], 
+        details[index].game_wheels[0][2]
+      ),
       maxSuspensionTravel: 1,
       customSlidingRotationalSpeed: 30,
     });
@@ -166,7 +186,11 @@ export default class Car {
       maxSuspensionForce: 10000,
       rollInfluence: 0.01,
       axleLocal: new CANNON.Vec3(-1, 0, 0),
-      chassisConnectionPointLocal: new CANNON.Vec3(-0.78, 0.1, -1.32),
+      chassisConnectionPointLocal: new CANNON.Vec3(
+        details[index].game_wheels[1][0], 
+        details[index].game_wheels[1][1], 
+        details[index].game_wheels[1][2]
+      ),
       maxSuspensionTravel: 1,
       customSlidingRotationalSpeed: 30,
     });
@@ -181,7 +205,11 @@ export default class Car {
       maxSuspensionForce: 10000,
       rollInfluence: 0.01,
       axleLocal: new CANNON.Vec3(-1, 0, 0),
-      chassisConnectionPointLocal: new CANNON.Vec3(0.75, 0.1, 1.25),
+      chassisConnectionPointLocal: new CANNON.Vec3(
+        details[index].game_wheels[2][0], 
+        details[index].game_wheels[2][1], 
+        details[index].game_wheels[2][2]
+      ),
       maxSuspensionTravel: 1,
       customSlidingRotationalSpeed: 30,
     });
@@ -196,7 +224,11 @@ export default class Car {
       maxSuspensionForce: 10000,
       rollInfluence: 0.01,
       axleLocal: new CANNON.Vec3(-1, 0, 0),
-      chassisConnectionPointLocal: new CANNON.Vec3(-0.78, 0.1, 1.25),
+      chassisConnectionPointLocal: new CANNON.Vec3(
+        details[index].game_wheels[3][0], 
+        details[index].game_wheels[3][1], 
+        details[index].game_wheels[3][2]
+      ),
       maxSuspensionTravel: 1,
       customSlidingRotationalSpeed: 30,
     });
@@ -298,28 +330,22 @@ export default class Car {
         this.car.setBrake(0, 3);
 
         if (matchStarted) {
-          if (keysPressed.includes("a") || keysPressed.includes("arrowleft")) {
+          if (keysPressed.includes("arrowleft")) {
             console.log("left");
             this.car.setSteeringValue(maxSteerVal * 1, 2);
             this.car.setSteeringValue(maxSteerVal * 1, 3);
-          } else if (
-            keysPressed.includes("d") ||
-            keysPressed.includes("arrowright")
-          ) {
+          } else if (keysPressed.includes("arrowright")) {
             this.car.setSteeringValue(maxSteerVal * -1, 2);
             this.car.setSteeringValue(maxSteerVal * -1, 3);
           } else stopSteer();
 
-          if (keysPressed.includes("w") || keysPressed.includes("arrowup")) {
+          if (keysPressed.includes("arrowup")) {
             this.isReverse = false;
             this.car.applyEngineForce(maxForce * -1, 0);
             this.car.applyEngineForce(maxForce * -1, 1);
             this.car.applyEngineForce(maxForce * -1, 2);
             this.car.applyEngineForce(maxForce * -1, 3);
-          } else if (
-            keysPressed.includes("s") ||
-            keysPressed.includes("arrowdown")
-          ) {
+          } else if (keysPressed.includes("arrowdown")){
             this.isReverse = true;
             this.car.applyEngineForce(maxForce * 1, 0);
             this.car.applyEngineForce(maxForce * 1, 1);
