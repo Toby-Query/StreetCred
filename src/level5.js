@@ -15,6 +15,7 @@ import * as CANNON from "cannon-es";
 import { drawSpeedo } from "./gameScreenUI/speedometer.js";
 import { startCountdown, startMatch } from "./gameScreenUI/timer.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
+import { MiniMap } from "./setup/miniMap.js";
 
 console.log("what");
 // Canvas and Scene
@@ -304,6 +305,10 @@ function distanceBetweenVectors(v1, v2) {
   return Math.sqrt(dx * dx + dy * dy + dz * dz);
 }
 
+// Create a mini-map
+const miniMapElement = document.getElementById('miniMap'); // Ensure you have a div with this ID in your HTML
+const miniMap = new MiniMap(miniMapElement, scene,camera);
+
 const tick = () => {
   //console.log("tick");
   stats.begin();
@@ -374,7 +379,8 @@ const tick = () => {
   // if (camera_toggle) {
   followCamera.update(carPosition, carQuaternion);
   // }
-
+  // Update the mini-map with the main camera's position
+  miniMap.update(camera);
   renderer.render(scene, camera);
   stats.end();
 

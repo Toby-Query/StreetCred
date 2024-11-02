@@ -1,7 +1,8 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-
+import details from "./details.json";
+console.log(details);
 // Set up Renderer
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -66,27 +67,15 @@ scene.add(groundMesh);
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++
 //Setup the car selection
-const cars=["porsche","bmw_m6_gran_coupe","ford_mustang_shelby_gt500"];
-//Map each model's properties
-const carMap={
-    porsche:{
-        displacement:[0,0.1,0],
-        scale:[0.55,0.55,0.55],
-    },
-    bmw_m6_gran_coupe:{
-        displacement:[0,0.1,0.5],
-        scale:[0.75,0.75,0.75],
-    },
-    ford_mustang_shelby_gt500:{
-        displacement:[0,0.2,-1.5],
-        scale:[0.7,0.7,0.7],
-    },
-}
+//const cars=["porsche","bmw_m6_gran_coupe","ford_mustang_shelby_gt500"];
+const cars=details;
+
 var index=0;
 let s=localStorage.getItem("StreetCredCar");
 if (s){
-    index=cars.findIndex((c)=>c==s);
-    if (index==-1){
+    console.log(s);
+    index=parseInt(s);
+    if (!index){
         index=0;
     }
 }
@@ -113,29 +102,103 @@ loader.load(
         console.error("An error occurred while loading the model:", error);
     }
 );
-
+var loading=false;
 //Function to load the car
-async function load_car(car) {
+async function load_car() {
     return new Promise((resolve, reject) => {
+        if (loading) return;
+        let him=document.getElementById("holder");
+        if(!him.firstChild){
+            let her=document.createElement("div");
+            her.className="loader";
+            him.appendChild(her);
+        }
+        loading = true;
+        
+        const car_set = [];
         const loader = new GLTFLoader();
+        
+        // Load chassis
         loader.load(
-            `/${car}/scene.gltf`,
+            details[index].chassis_path,
             (gltf) => {
                 const car_obj = gltf.scene;
-                car_obj.scale.set(carMap[car].scale[0], carMap[car].scale[1], carMap[car].scale[2]);
-                car_obj.position.set(carMap[car].displacement[0], carMap[car].displacement[1], carMap[car].displacement[2]);
-                scene.add(car_obj);
-                // Set up camera controls after car is loaded
-                var camera_controls = new cameraControls(car_obj);                
-                // Resolve the promise with the loaded car object
-                resolve(car_obj);
+                car_obj.scale.set(
+                    details[index].show_scale[0],
+                    details[index].show_scale[1],
+                    details[index].show_scale[2]
+                );
+                car_obj.position.set(
+                    details[index].chassis_displacement[0],
+                    details[index].chassis_displacement[1],
+                    details[index].chassis_displacement[2]
+                );
+                
+                car_set.push(car_obj); // Add chassis to car_set
+                var camera_controls = new cameraControls(car_obj); // Set up camera controls
+                
+                // Load wheels in parallel
+                const wheelPromises = [];
+                
+                for (let i = 0; i < 4; i++) {
+                    wheelPromises.push(
+                        new Promise((resolveWheel, rejectWheel) => {
+                            loader.load(
+                                details[index].wheel_path,
+                                (gltf) => {
+                                    const wheel = gltf.scene;
+                                    wheel.scale.set(
+                                        details[index].show_scale[0] * details[index].wheel_orientation[i],
+                                        details[index].show_scale[1] * details[index].wheel_orientation[i],
+                                        details[index].show_scale[2] * details[index].wheel_orientation[i]
+                                    );
+                                    wheel.position.set(
+                                        car_obj.position.x + details[index].wheel_positions[i][0],
+                                        car_obj.position.y + details[index].wheel_positions[i][1],
+                                        car_obj.position.z + details[index].wheel_positions[i][2]
+                                    );
+
+                                    if (i === 0) {
+                                        scene.add(car_obj); // Add chassis to the scene once
+                                    }
+                                    
+                                    scene.add(wheel); // Add each wheel to the scene
+                                    car_set.push(wheel); // Add wheel to car_set
+                                    resolveWheel();
+                                },
+                                (xhr) => {
+                                    console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+                                },
+                                (error) => {
+                                    console.error("An error occurred while loading a wheel:", error);
+                                    rejectWheel(error); // Reject if there's an error loading the wheel
+                                }
+                            );
+                        })
+                    );
+                }
+
+                // Wait for all wheels to load before resolving the entire car
+                Promise.all(wheelPromises)
+                    .then(() => {
+                        loading = false;
+                        document.getElementById("name").textContent=details[index].name;
+                        document.getElementById("image").src=details[index].logo;
+                        document.getElementById("holder").replaceChildren();
+                        resolve(car_set);
+                    })
+                    .catch((error) => {
+                        loading = false;
+                        reject(error); // Reject if any wheel fails to load
+                    });
             },
-            (xhr)=>{
+            (xhr) => {
                 console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
             },
-            (error)=>{
-                console.error("An error occurred while loading the model:", error);
-                reject(error); // Reject if there's an error loading the car
+            (error) => {
+                console.error("An error occurred while loading the chassis:", error);
+                loading = false;
+                reject(error); // Reject if there's an error loading the chassis
             }
         );
     });
@@ -143,15 +206,20 @@ async function load_car(car) {
 //load an initial car
 var current_car;
 try {
-    current_car = await load_car(cars[index]);
+    current_car = await load_car();
+    loading=false;
 } catch (error) {
     console.error("Failed to load car:", error);
 }
 
 async function handleKeydown(e){
+    if (loading){
+        return;
+    }
     //Accept choice
     if (e.key=="Enter"){
-        localStorage.setItem("StreetCredCar",cars[index]);
+        localStorage.setItem("StreetCredCar",index.toString());
+        console.log("what");
         window.history.go(-1);
         return;
     }
@@ -178,13 +246,15 @@ async function handleKeydown(e){
     else{
         return;
     }
-    if (current_car){
+    if (current_car.length>0){
         //remove current car before adding a new one
-        scene.remove(current_car);
-        current_car=null;
+        for (let i=0;i<current_car.length;i++){
+            scene.remove(current_car[i]);
+        }
+        current_car=[];
     }
     //load new car
-    current_car=await load_car(cars[index]);
+    current_car=await load_car();
 }
 //Listen for key presses
 window.addEventListener("keydown",(event) => handleKeydown(event));
