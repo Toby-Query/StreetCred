@@ -106,11 +106,11 @@ function createMovingObstacle({ size, startPosition, endPosition, speed, world, 
   // Movement properties
   let direction = 1;
   const updatePosition = () => {
-    body.position.z += speed * direction;
-    mesh.position.z = body.position.z;
-    
+    body.position.x += speed * direction; // Moves horizontally on the x-axis
+    mesh.position.x = body.position.x;
+
     // Reverse direction if reaching end points
-    if (body.position.z > endPosition[2] || body.position.z < startPosition[2]) {
+    if (body.position.x > endPosition[0] || body.position.x < startPosition[0]) {
       direction *= -1;
     }
   };
@@ -118,22 +118,40 @@ function createMovingObstacle({ size, startPosition, endPosition, speed, world, 
   return { mesh, body, updatePosition };
 }
 
+
+
+
 // Create moving obstacles
 const movingObstacles = [
   createMovingObstacle({
     size: [2, 2, 2],
-    startPosition: [0, 1, 50],
-    endPosition: [0, 1, 270],
+    startPosition: [0, 1, 100],
+    endPosition: [5, 1, 100],
     speed: 0.05,
-    
     world,
     scene
   }),
   createMovingObstacle({
-    size: [3, 3, 3],
-    startPosition: [-2, 1, 350],
-    endPosition: [-2, 1, 370],
+    size: [2, 2, 2],
+    startPosition: [-5, 1, 200],
+    endPosition: [5, 1, 200],
+    speed: 0.04,
+    world,
+    scene
+  }),
+  createMovingObstacle({
+    size: [2, 2, 2],
+    startPosition: [-5, 1, 300],
+    endPosition: [5, 1, 300],
     speed: 0.03,
+    world,
+    scene
+  }),
+  createMovingObstacle({
+    size: [2, 2, 2],
+    startPosition: [-5, 1, 400],
+    endPosition: [5, 1, 400],
+    speed: 0.06,
     world,
     scene
   })
@@ -142,9 +160,9 @@ const movingObstacles = [
 // Set up collision detection
 let hasCollided = false;
 
-function setupCollisionDetection(car, obstacles) {
+function setupCollisionDetection(car, staticObstacles, movingObstacles) {
   car.car.chassisBody.addEventListener("collide", (event) => {
-    obstacles.forEach((obstacle) => {
+    staticObstacles.concat(movingObstacles).forEach((obstacle) => {
       if (event.body === obstacle.body) {
         hasCollided = true;
         console.log("Collision detected with obstacle! Game Over.");
@@ -153,7 +171,9 @@ function setupCollisionDetection(car, obstacles) {
     });
   });
 }
-setupCollisionDetection(car, obstacles);
+
+// Call collision detection setup with both static and moving obstacles
+setupCollisionDetection(car, obstacles, movingObstacles);
 
 // Boundary Walls// Current boundary walls
 createBox({ size: [1, 50, 1500], color: 0x32CD32, texture: texture, mass: 0, position: [10, 5, 0], scene, world });
@@ -229,6 +249,7 @@ const tick = () => {
   lastCallTime = time;
 
   movingObstacles.forEach(obstacle => obstacle.updatePosition());
+
 
   const carSpeed = car.getSpeed();
   const carGear = car.getGear();
