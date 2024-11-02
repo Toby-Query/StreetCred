@@ -224,7 +224,7 @@ createBox({
 const goalBox = createGoalBox({
   size: [10, 10, 1],
   color: 0x0000ff,
-  position: [0, 5, 800],
+  position: [0, 5, 650],
   scene: scene,
   label: "GOAL",
 });
@@ -234,7 +234,7 @@ const followCamera = new FollowCamera(camera);
 
 // Countdown
 const countdownElement = document.getElementById("countdown");
-startCountdown(40, countdownElement);
+startCountdown(30, countdownElement);
 
 // Check if car reaches goal
 function checkGoal(carPosition, goalBox) {
@@ -273,7 +273,7 @@ startMatch();
 
 // Set up win condition timer
 let startTime = Date.now();
-const winConditionTime = 40 * 1000; // 1 minute 30 seconds in milliseconds
+const winConditionTime = 30 * 1000; // 1 minute 30 seconds in milliseconds
 
 // Animation Loop with Win Condition Check
 const timeStep = 1 / 60;
