@@ -6,7 +6,12 @@ import { createControls } from "./setup/cameraControls.js";
 import { setupLights } from "./setup/lights.js";
 import { loadCubeTextures } from "./setup/skybox.js";
 import { initPhysics } from "./setup/physics.js";
-import { setupFloor, createBox, createRamp } from "./buildWorld.js";
+import {
+  setupFloor,
+  createBox,
+  createRamp,
+  createGoalBox,
+} from "./buildWorld.js";
 import stats from "./setup/stats.js";
 import Car from "./cars/car.js";
 import Car2 from "./cars/car2.js";
@@ -80,6 +85,74 @@ const box5 = createBox({
   world: world,
 });
 
+const box6 = createBox({
+  size: [300, 2, 3],
+  color: 0xff0000,
+  mass: 0,
+  position: [-185, 50, 700],
+  scene: scene,
+  world: world,
+});
+
+// Create a moving platform
+const blueBox = createBox({
+  size: [20, 1, 100], // Adjust size as needed
+  color: 0x0000ff, // Platform color
+  mass: 0, // Mass 0 to make it static (but we will manually move it)
+  position: [0, 47, 700], // Initial position
+  scene: scene,
+  world: world,
+});
+
+const box7 = createBox({
+  size: [200, 89, 50],
+  color: 0x00ff00,
+  mass: 0,
+  position: [90, 3, 625],
+  scene: scene,
+  world: world,
+});
+
+// const box8 = createBox({
+//   size: [50, 89, 200],
+//   color: 0x00ff00,
+//   mass: 0,
+//   position: [215, 3, 550],
+//   scene: scene,
+//   world: world,
+// });
+
+const box9 = createBox({
+  size: [2, 50, 50],
+  color: 0xf0f00f,
+  mass: 0,
+  position: [12, 50, 622],
+  scene: scene,
+  world: world,
+});
+
+const box10 = createBox({
+  size: [2, 50, 50],
+  color: 0xf0f00f,
+  mass: 0,
+  position: [22, 50, 600],
+  scene: scene,
+  world: world,
+});
+
+const box11 = createBox({
+  size: [2, 50, 50],
+  color: 0xf0f00f,
+  mass: 0,
+  position: [22, 50, 655],
+  scene: scene,
+  world: world,
+});
+
+// const initialY = movingBox.mesh.position.y; // Store initial Y position
+// const amplitude = 5; // Height of the up and down movement
+// const speed = 1; // Speed of the movement
+
 // createRamp(scene, world);
 
 // Follow Camera
@@ -94,6 +167,15 @@ let lastCallTime;
 const countdownElement = document.getElementById("countdown");
 //startCountdown(50, countdownElement);
 startMatch();
+
+// Create the goal box
+const goalBox = createGoalBox({
+  size: [13, 6, 10],
+  color: 0x0000ff,
+  position: [300, 30, 625],
+  scene: scene,
+  label: "GOAL",
+});
 
 function checkGoal(carPosition, goalBox) {
   const { x, y, z } = carPosition;
@@ -139,6 +221,12 @@ const tick = () => {
   world.step(timeStep, dt);
   lastCallTime = time;
 
+  // // Update moving platform position with sinusoidal motion
+  // movingBox.mesh.position.y = initialY + amplitude * Math.sin(speed * time);
+
+  // // Sync the physics body with the new position
+  // movingBox.body.position.y = movingBox.mesh.position.y;
+
   // Retrieve car speed and update speedometer
   const carSpeed = car.getSpeed(); // Assume car.getSpeed() returns speed value
   const carGear = car.getGear(); // Assume car.getGear() returns current gear
@@ -151,12 +239,19 @@ const tick = () => {
     car.car.chassisBody.position.y,
     car.car.chassisBody.position.z
   );
+
+  if (car.car.chassisBody.position.y <= 20) {
+    window.location.href = "../lose.html";
+  }
+
   const carQuaternion = new THREE.Quaternion(
     car.car.chassisBody.quaternion.x,
     car.car.chassisBody.quaternion.y,
     car.car.chassisBody.quaternion.z,
     car.car.chassisBody.quaternion.w
   );
+
+  checkGoal(carPosition, goalBox);
 
   if (!isEditMode) followCamera.update(carPosition, carQuaternion);
 
