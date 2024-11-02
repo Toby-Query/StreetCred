@@ -28,7 +28,7 @@ export function startCountdown(seconds, displayElement) {
       timeLeft--;
       setTimeout(updateDisplay, 1000);
     } else {
-      window.location.href = "../lose.html";
+      window.location.href = "../houndsHtml/lose5.html";
       setTimeout(() => (displayElement.textContent = ""), 1000);
     }
   }
