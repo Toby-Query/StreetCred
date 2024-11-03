@@ -281,20 +281,20 @@ scene.add(that_one);
 const countdownElement = document.getElementById("countdown");
 //startCountdown(50, countdownElement);
 function countdown(n, who) {
-  if (n === 6) {
+  if (n === 4) {
     who.material.color.setHex(0xff0000);
-  } else if (n === 3) {
+  } else if (n === 2) {
     who.material.color.setHex(0xffa500);
   } else if (n === 0) {
     who.material.color.setHex(0x00ff00);
     startMatch();
-    //startCountdown(50, countdownElement);
+    startCountdown(30, countdownElement);
     return;
   }
   //renderer.render(scene, camera);
   setTimeout(() => countdown(n - 1, who), 1000);
 }
-countdown(3, this_one);
+countdown(6, this_one);
 
 function distanceBetweenVectors(v1, v2) {
   const dx = v2[0] - v1.x;
@@ -372,9 +372,10 @@ const tick = () => {
     }
   }
   let ddd = distanceBetweenVectors(carPosition, [0, 0, 0]);
-  if (score == 9 && ddd < 10) {
+  if (score == 9 && ddd < 10){
     //you have finished the race
     console.log("done");
+    window.location.href="../win.html";
   }
   // if (camera_toggle) {
   followCamera.update(carPosition, carQuaternion);
