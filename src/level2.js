@@ -105,6 +105,13 @@ const obstacles = [
     scene,
   }),
   createSphericalObstacle({ radius: 1, position: [0, 1, 500], world, scene }),
+  createSphericalObstacle({
+    radius: 1.3,
+    position: [-2, 0, 400],
+    world,
+    scene,
+  }),
+  createSphericalObstacle({ radius: 1, position: [-2, 1, 30], world, scene }),
 ];
 
 // Function to create a moving obstacle with a unique color
@@ -154,32 +161,50 @@ const movingObstacles = [
   createMovingSphericalObstacle({
     radius: 1,
     startPosition: [0, 1, 100],
-    endPosition: [5, 1, 100],
-    speed: 0.08, // Increased speed
+    endPosition: [9, 1, 100],
+    speed: 0.1, // Increased speed
     world,
     scene,
   }),
   createMovingSphericalObstacle({
     radius: 1,
     startPosition: [-5, 1, 200],
-    endPosition: [10, 1, 200],
-    speed: 0.07, // Increased speed
+    endPosition: [9, 1, 200],
+    speed: 0.5, // Increased speed
     world,
     scene,
   }),
   createMovingSphericalObstacle({
     radius: 1,
     startPosition: [-5, 1, 300],
-    endPosition: [10, 1, 300],
-    speed: 0.06, // Increased speed
+    endPosition: [9, 1, 300],
+    speed: 0.9, // Increased speed
     world,
     scene,
   }),
   createMovingSphericalObstacle({
     radius: 1,
     startPosition: [-5, 1, 400],
-    endPosition: [10, 1, 400],
-    speed: 0.09, // Increased speed
+    endPosition: [9, 1, 400],
+    speed: 0.2, // Increased speed
+    world,
+    scene,
+  }),
+
+  createMovingSphericalObstacle({
+    radius: 1,
+    startPosition: [-5, 1, 45],
+    endPosition: [9, 1, 45],
+    speed: 0.2, // Increased speed
+    world,
+    scene,
+  }),
+
+  createMovingSphericalObstacle({
+    radius: 1,
+    startPosition: [-5, 1, 600],
+    endPosition: [9, 1, 600],
+    speed: 1, // Increased speed
     world,
     scene,
   }),
@@ -194,7 +219,7 @@ function setupCollisionDetection(car, staticObstacles, movingObstacles) {
       if (event.body === obstacle.body) {
         hasCollided = true;
         console.log("Collision detected with obstacle! Game Over.");
-        window.location.href = "../houndsHtml/lose5.html";
+        window.location.href = "../lose.html";
       }
     });
   });
@@ -279,7 +304,7 @@ function checkGoal(carPosition, goalBox) {
     z < goalBox.position.z + halfZ
   ) {
     console.log("Goal reached! Race is over.");
-    window.location.href = "../goal.html";
+    window.location.href = "../win.html";
   }
 }
 
