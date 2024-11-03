@@ -109,31 +109,29 @@ createWall({
   position: [-playAreaSize / 2 + 0.5, 2.5, 0], // Adjusted position to fit within bounds
 });
 
-// Create goal area
 // Create goal area within the existing play area
 const goalArea = new THREE.Mesh(
-  new THREE.CylinderGeometry(7, 7, 0.2, 32),
+  new THREE.BoxGeometry(10, 0.1, 10),
   new THREE.MeshStandardMaterial({
-    color: 0x0000ff, // Change to blue
-    opacity: 0.8,
+    color: 0x00ff00,
+    opacity: 0.5,
     transparent: true,
-    roughness: 0.5,
-    metalness: 0.3,
   })
 );
-goalArea.rotation.x = Math.PI / 2; // Rotate to lay flat
+
+// Adjusted position to keep goal inside play area boundaries
 goalArea.position.set(0, 0.1, -playAreaSize / 2 + 51);
 scene.add(goalArea);
 
 // Update physics body position for goal detection
 const goalBody = new CANNON.Body({
   mass: 0,
-  position: new CANNON.Vec3(0, 0.1, -playAreaSize / 2 + 53),
+  position: new CANNON.Vec3(0, 0.1, -playAreaSize / 2 + 50),
 });
 goalBody.addShape(new CANNON.Box(new CANNON.Vec3(5, 0.1, 5)));
 world.addBody(goalBody);
 
-// Create sphere obstacles with texture and physics
+// Create sphere obstacles with texture and physic
 function createSphereObstacle({ radius, position, mass = 5, color }) {
   const geometry = new THREE.SphereGeometry(radius, 32, 32);
   const material = new THREE.MeshStandardMaterial({
