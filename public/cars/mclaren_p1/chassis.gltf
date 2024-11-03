@@ -5,86 +5,18 @@
 	},
 	"extensionsUsed":[
 		"KHR_materials_clearcoat",
-		"KHR_texture_transform",
-		"KHR_lights_punctual"
+		"KHR_texture_transform"
 	],
 	"extensionsRequired":[
-		"KHR_texture_transform",
-		"KHR_lights_punctual"
+		"KHR_texture_transform"
 	],
-	"extensions":{
-		"KHR_lights_punctual":{
-			"lights":[
-				{
-					"color":[
-						1,
-						0,
-						0.0008031529723666608
-					],
-					"intensity":27.17570653294113,
-					"spot":{
-						"innerConeAngle":0.3337942263919169,
-						"outerConeAngle":0.39269909262657166
-					},
-					"type":"spot",
-					"name":"Area"
-				},
-				{
-					"color":[
-						1,
-						0,
-						0.0008031529723666608
-					],
-					"intensity":27.17570653294113,
-					"spot":{
-						"innerConeAngle":0.3337942263919169,
-						"outerConeAngle":0.39269909262657166
-					},
-					"type":"spot",
-					"name":"Area.001"
-				},
-				{
-					"color":[
-						1,
-						1,
-						1
-					],
-					"intensity":54.35141306588226,
-					"spot":{
-						"innerConeAngle":0.4450589685225559,
-						"outerConeAngle":0.5235987901687622
-					},
-					"type":"spot",
-					"name":"Spot"
-				},
-				{
-					"color":[
-						1,
-						1,
-						1
-					],
-					"intensity":54.35141306588226,
-					"spot":{
-						"innerConeAngle":0.4450589685225559,
-						"outerConeAngle":0.5235987901687622
-					},
-					"type":"spot",
-					"name":"Spot.001"
-				}
-			]
-		}
-	},
 	"scene":0,
 	"scenes":[
 		{
 			"name":"Scene",
 			"nodes":[
 				128,
-				134,
-				135,
-				136,
-				137,
-				138
+				134
 			]
 		}
 	],
@@ -1355,92 +1287,6 @@
 				0.011275035329163074,
 				-0.0007410055841319263,
 				0.00026173904188908637
-			]
-		},
-		{
-			"extensions":{
-				"KHR_lights_punctual":{
-					"light":0
-				}
-			},
-			"name":"brake_light1",
-			"rotation":[
-				0,
-				-0.2164396047592163,
-				0,
-				0.9762960076332092
-			],
-			"scale":[
-				0.30000001192092896,
-				0.019999997690320015,
-				1
-			],
-			"translation":[
-				0.7288351058959961,
-				0.9381991624832153,
-				-2.048583745956421
-			]
-		},
-		{
-			"extensions":{
-				"KHR_lights_punctual":{
-					"light":1
-				}
-			},
-			"name":"brake_light2",
-			"rotation":[
-				0,
-				0.1736481934785843,
-				0,
-				0.9848078489303589
-			],
-			"scale":[
-				0.30000001192092896,
-				0.019999997690320015,
-				1
-			],
-			"translation":[
-				-0.7726500630378723,
-				0.93125319480896,
-				-2.1029272079467773
-			]
-		},
-		{
-			"extensions":{
-				"KHR_lights_punctual":{
-					"light":2
-				}
-			},
-			"name":"Spot",
-			"rotation":[
-				1,
-				0,
-				0,
-				4.7414219217500886e-09
-			],
-			"translation":[
-				0.9201765656471252,
-				0.6809318661689758,
-				2.5192720890045166
-			]
-		},
-		{
-			"extensions":{
-				"KHR_lights_punctual":{
-					"light":3
-				}
-			},
-			"name":"Spot.001",
-			"rotation":[
-				1,
-				0,
-				0,
-				4.7414219217500886e-09
-			],
-			"translation":[
-				-0.9067855477333069,
-				0.6809318661689758,
-				2.5192720890045166
 			]
 		}
 	],
