@@ -203,7 +203,7 @@ const box13 = createBox({
 
 // Create the goal box
 const goalBox = createGoalBox({
-  size: [13, 6, 10],
+  size: [13, 6, 20],
   color: 0x00ff00,
   position: [370, 3, 5],
   scene: scene,
@@ -214,7 +214,7 @@ const countdownElement = document.getElementById("countdown");
 // Call this function at the start to initiate countdown
 preRaceCountdown(5, () => {
   // Start main race timer after countdown completes
-  startCountdown(21, countdownElement);
+  startCountdown(25, countdownElement);
 });
 
 // Function to check if car is within the goal box
@@ -287,7 +287,7 @@ const tick = () => {
     car.car.chassisBody.quaternion.w
   );
 
-  followCamera.update(carPosition, carQuaternion);
+  if (!isEditMode) followCamera.update(carPosition, carQuaternion);
 
   renderer.render(scene, camera);
   //stats.end();
