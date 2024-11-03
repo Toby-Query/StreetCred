@@ -160,51 +160,51 @@ function createMovingSphericalObstacle({
 const movingObstacles = [
   createMovingSphericalObstacle({
     radius: 1,
-    startPosition: [0, 1, 100],
+    startPosition: [-9, 1, 100],
     endPosition: [9, 1, 100],
-    speed: 0.1, // Increased speed
+    speed: 0.2, // Increased speed
     world,
     scene,
   }),
   createMovingSphericalObstacle({
     radius: 1,
-    startPosition: [-5, 1, 200],
+    startPosition: [-9, 1, 200],
     endPosition: [9, 1, 200],
+    speed: 0.3, // Increased speed
+    world,
+    scene,
+  }),
+  createMovingSphericalObstacle({
+    radius: 1,
+    startPosition: [-9, 1, 300],
+    endPosition: [9, 1, 300],
     speed: 0.5, // Increased speed
     world,
     scene,
   }),
   createMovingSphericalObstacle({
     radius: 1,
-    startPosition: [-5, 1, 300],
-    endPosition: [9, 1, 300],
-    speed: 0.9, // Increased speed
-    world,
-    scene,
-  }),
-  createMovingSphericalObstacle({
-    radius: 1,
-    startPosition: [-5, 1, 400],
+    startPosition: [-9, 1, 400],
     endPosition: [9, 1, 400],
-    speed: 0.2, // Increased speed
+    speed: 0.7, // Increased speed
     world,
     scene,
   }),
 
   createMovingSphericalObstacle({
     radius: 1,
-    startPosition: [-5, 1, 45],
+    startPosition: [-9, 1, 45],
     endPosition: [9, 1, 45],
-    speed: 0.2, // Increased speed
+    speed: 0.1, // Increased speed
     world,
     scene,
   }),
 
   createMovingSphericalObstacle({
     radius: 1,
-    startPosition: [-5, 1, 600],
+    startPosition: [-9, 1, 600],
     endPosition: [9, 1, 600],
-    speed: 1, // Increased speed
+    speed: 0.7, // Increased speed
     world,
     scene,
   }),
@@ -286,7 +286,7 @@ const followCamera = new FollowCamera(camera);
 
 // Countdown
 const countdownElement = document.getElementById("countdown");
-startCountdown(15, countdownElement);
+startCountdown(20, countdownElement);
 
 // Check if car reaches goal
 function checkGoal(carPosition, goalBox) {
