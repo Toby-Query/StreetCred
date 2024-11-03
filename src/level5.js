@@ -287,7 +287,7 @@ function countdown(n, who) {
   } else if (n === 0) {
     who.material.color.setHex(0x00ff00);
     startMatch();
-    startCountdown(30, countdownElement);
+    startCountdown(30, countdownElement, 2);
     return;
   }
   //renderer.render(scene, camera);

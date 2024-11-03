@@ -348,7 +348,7 @@ const tick = () => {
   );
 
   if (car.car.chassisBody.position.y <= 20) {
-    window.location.href = "../lose.html";
+    window.location.href = "../houndsHtml/lose1.html";
   }
 
   const carQuaternion = new THREE.Quaternion(

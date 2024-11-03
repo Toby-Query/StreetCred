@@ -231,7 +231,7 @@ function setupCollisionDetection(
         if (event.body === obstacle.body) {
           hasCollided = true;
           console.log("Collision detected with obstacle! Game Over.");
-          window.location.href = "../lose.html";
+          window.location.href = "../houndsHtml/lose3.html";
         }
       });
   });
