@@ -420,7 +420,11 @@ export default class Car {
         }
       } else {
         pauseEngineSound();
-        playBrakeSound();
+        if (this.getSpeed() > 3) {
+          playBrakeSound();
+        } else {
+          pauseBrakeSound();
+        }
         brake();
       }
     };
