@@ -7,12 +7,16 @@ import { setupLights } from "./setup/lights.js";
 import { loadCubeTextures } from "./setup/skybox.js";
 import { initPhysics } from "./setup/physics.js";
 import { setupFloor } from "./buildWorld.js";
-import stats from "./setup/stats.js";
+// import stats from "./setup/stats.js";
 import Car from "./cars/car.js";
 import { FollowCamera } from "./setup/followCamera.js";
 import * as CANNON from "cannon-es";
 import { drawSpeedo } from "./gameScreenUI/speedometer.js";
-import { startCountdown, startMatch } from "./gameScreenUI/timer.js";
+import {
+  startCountdown,
+  startMatch,
+  preRaceCountdown,
+} from "./gameScreenUI/timer.js";
 import { MiniMap } from "./setup/miniMap.js";
 
 // Canvas and Scene setup
@@ -48,7 +52,7 @@ let boostCooldown = false;
 let countdown = 3; // Countdown time in seconds
 let score = 0;
 const maxScore = 5; // Number of balls to score in goal area to win
-const countdownElement = document.getElementById("countdown");
+//const countdownElement = document.getElementById("countdown");
 
 // Texture loader for realistic textures
 const textureLoader = new THREE.TextureLoader();
@@ -168,20 +172,12 @@ for (let i = 0; i < maxScore; i++) {
   obstacles.push(obstacle);
 }
 
-// Countdown timer
-function startRaceCountdown() {
-  const interval = setInterval(() => {
-    countdownElement.innerText = countdown > 0 ? countdown : "Go!";
-    countdown--;
-
-    if (countdown < 0) {
-      clearInterval(interval);
-      startMatch();
-      countdownElement.style.display = "none";
-    }
-  }, 1000);
-}
-startRaceCountdown(); // Start countdown
+const countdownElement = document.getElementById("countdown");
+// Call this function at the start to initiate countdown
+preRaceCountdown(5, () => {
+  // Start main race timer after countdown completes
+  startCountdown(120, countdownElement);
+});
 
 // Create a mini-map
 const miniMapElement = document.getElementById("miniMap"); // Ensure you have a div with this ID in your HTML
@@ -240,7 +236,7 @@ function checkGoal(obstacle) {
 
 // Game loop
 const tick = () => {
-  stats.begin();
+  //stats.begin();
   controls.update();
 
   const time = performance.now() / 1000;
@@ -284,7 +280,7 @@ const tick = () => {
   miniMap.update(camera);
 
   renderer.render(scene, camera);
-  stats.end();
+  //stats.end();
   window.requestAnimationFrame(tick);
 };
 tick();

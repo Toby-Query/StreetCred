@@ -9,11 +9,10 @@ import { initPhysics } from "./setup/physics.js";
 import {
   setupFloor,
   createBox,
-  createRamp,
   createGoalBox,
   setupDryFloor,
 } from "./buildWorld.js";
-import stats from "./setup/stats.js";
+//import stats from "./setup/stats.js";
 import Car from "./cars/car.js";
 import Car2 from "./cars/car2.js";
 import { FollowCamera } from "./setup/followCamera.js"; // Import FollowCamera
@@ -321,7 +320,7 @@ document.addEventListener("keydown", (event) => {
 startMatch();
 
 const tick = () => {
-  stats.begin();
+  //stats.begin();
   controls.update();
 
   const time = performance.now() / 1000; // seconds
@@ -361,12 +360,13 @@ const tick = () => {
 
   checkGoal(carPosition, goalBox);
 
-  if (!isEditMode) followCamera.update(carPosition, carQuaternion);
+  // if (!isEditMode)
+  followCamera.update(carPosition, carQuaternion);
 
   miniMap.update(camera);
 
   renderer.render(scene, camera);
-  stats.end();
+  //stats.end();
 
   window.requestAnimationFrame(tick);
 };

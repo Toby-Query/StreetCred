@@ -10,8 +10,8 @@ export function setupLights(scene) {
   light.castShadow = true;
 
   // Set the shadow map size for better resolution
-  light.shadow.mapSize.width = 1024; // Adjust for shadow quality
-  light.shadow.mapSize.height = 1024;
+  light.shadow.mapSize.width = 2 * 2048; // Adjust for shadow quality
+  light.shadow.mapSize.height = 2 * 2048;
 
   // Set the shadow camera to cover an 800x800 area
   light.shadow.camera.left = -800; // -800 / 2

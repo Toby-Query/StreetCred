@@ -7,14 +7,14 @@ import { setupLights } from "./setup/lights.js";
 import { loadCubeTextures, loadSkybox } from "./setup/skybox.js";
 import { initPhysics } from "./setup/physics.js";
 import { setupFloor, createBox, createGoalBox } from "./buildWorld.js";
-import stats from "./setup/stats.js";
+//import stats from "./setup/stats.js";
 import Car from "./cars/car.js";
 import Car2 from "./cars/car2.js";
 import { FollowCamera } from "./setup/followCamera.js"; // Import FollowCamera
 import * as CANNON from "cannon-es";
 import { drawSpeedo } from "./gameScreenUI/speedometer.js";
 import { preRaceCountdown, startCountdown } from "./gameScreenUI/timer.js";
-import { MiniMap } from "./setup/miniMap.js";
+//import { MiniMap } from "./setup/miniMap.js";
 
 // Canvas and Scene
 const canvas = document.querySelector("canvas.webgl");
@@ -214,7 +214,7 @@ const countdownElement = document.getElementById("countdown");
 // Call this function at the start to initiate countdown
 preRaceCountdown(5, () => {
   // Start main race timer after countdown completes
-  startCountdown(23, countdownElement);
+  startCountdown(21, countdownElement);
 });
 
 // Function to check if car is within the goal box
@@ -252,11 +252,11 @@ document.addEventListener("keydown", (event) => {
 });
 
 // Create a mini-map
-const miniMapElement = document.getElementById("miniMap"); // Ensure you have a div with this ID in your HTML
-const miniMap = new MiniMap(miniMapElement, scene, camera);
+// const miniMapElement = document.getElementById("miniMap"); // Ensure you have a div with this ID in your HTML
+// const miniMap = new MiniMap(miniMapElement, scene, camera);
 
 const tick = () => {
-  stats.begin();
+  //stats.begin();
   controls.update();
 
   const time = performance.now() / 1000; // seconds
@@ -287,14 +287,12 @@ const tick = () => {
     car.car.chassisBody.quaternion.w
   );
 
-  if (!isEditMode) {
-    followCamera.update(carPosition, carQuaternion);
-  }
+  followCamera.update(carPosition, carQuaternion);
 
   renderer.render(scene, camera);
-  stats.end();
+  //stats.end();
 
-  miniMap.update(camera);
+  // miniMap.update(camera);
   window.requestAnimationFrame(tick);
 };
 tick();

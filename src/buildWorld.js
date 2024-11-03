@@ -139,7 +139,7 @@ export function createColliderBox({
 // Function to create a goal area without physics
 export function createGoalBox({
   size = [13, 6, 10],
-  color = 0x0000ff,
+  color = 0x00ff00,
   position = [370, 3, 5],
   scene,
   label = "GOAL",
@@ -161,87 +161,7 @@ export function createGoalBox({
   // Add the box to the scene
   scene.add(mesh);
 
-  // Optionally, add a label above the goal box
-  // const loader = new FontLoader();
-  // loader.load("path/to/font.json", function (font) {
-  //   const textGeo = new THREE.TextGeometry(label, {
-  //     font: font,
-  //     size: 2,
-  //     height: 0.5,
-  //   });
-  //   const textMat = new THREE.MeshBasicMaterial({ color: 0xffff00 });
-  //   const textMesh = new THREE.Mesh(textGeo, textMat);
-  //   textMesh.position.set(
-  //     position[0],
-  //     position[1] + height / 2 + 1,
-  //     position[2]
-  //   );
-  //   scene.add(textMesh);
-  // });
   return mesh;
-}
-
-// Function to create a ramp
-export function createRamp(scene, world) {
-  const factor = 50;
-  // Ramp dimensions
-  const rampWidth = factor * 5;
-  const rampHeight = factor * 0.5;
-  const rampDepth = factor * 10;
-  const rampAngle = Math.PI / 8; // 30 degrees
-
-  // Create Three.js ramp mesh
-  const rampGeometry = new THREE.BoxGeometry(rampWidth, rampHeight, rampDepth);
-  const rampMaterial = new THREE.MeshStandardMaterial({ color: 0x8b4513 });
-  const rampMesh = new THREE.Mesh(rampGeometry, rampMaterial);
-  rampMesh.castShadow = true;
-  rampMesh.receiveShadow = true;
-
-  // Position and rotate the ramp
-  rampMesh.position.set(0, rampHeight / 2, 0); // Adjust position as needed
-  rampMesh.rotation.x = -rampAngle;
-  scene.add(rampMesh);
-
-  // Create Cannon-ES ramp body
-  const rampShape = new CANNON.Box(
-    new CANNON.Vec3(rampWidth / 2, rampHeight / 2, rampDepth / 2)
-  );
-  const rampBody = new CANNON.Body({
-    mass: 0, // Static object
-    shape: rampShape,
-    wireframe: true,
-  });
-  rampBody.position.set(0, rampHeight / 2, 0); // Position the physics body
-  rampBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -rampAngle); // Rotate to match mesh
-  world.addBody(rampBody);
-
-  // Add wireframe visualization for the physics body
-  //const wireframe = addPhysicsWireframe(rampShape, 0x00ff00); // Green wireframe color
-  //scene.add(wireframe);
-
-  // Sync the wireframe with the Cannon body in the animation loop
-  //rampBody.threeWireframe = wireframe;
-
-  return { rampMesh, rampBody };
-}
-
-// Helper function to create a wireframe for Cannon-ES body
-function addPhysicsWireframe(cannonShape, color) {
-  // Create Three.js wireframe geometry based on the shape
-  const geometry = new THREE.BoxGeometry(
-    cannonShape.halfExtents.x * 2,
-    cannonShape.halfExtents.y * 2,
-    cannonShape.halfExtents.z * 2
-  );
-
-  // Wireframe material
-  const wireframeMaterial = new THREE.LineBasicMaterial({ color });
-  const wireframe = new THREE.LineSegments(
-    new THREE.EdgesGeometry(geometry),
-    wireframeMaterial
-  );
-
-  return wireframe;
 }
 
 export function setupDryFloor(scene, world) {

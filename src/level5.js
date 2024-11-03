@@ -7,7 +7,7 @@ import { setupLights } from "./setup/lights.js";
 import { loadCubeTextures, loadSkybox } from "./setup/skybox.js";
 import { initPhysics } from "./setup/physics.js";
 import { setupPhysFloor, createBox, createColliderBox } from "./buildWorld.js";
-import stats from "./setup/stats.js";
+// import stats from "./setup/stats.js";
 import Car from "./cars/car.js";
 import Car2 from "./cars/car2.js";
 import { FollowCamera } from "./setup/followCamera.js"; // Import FollowCamera
@@ -310,7 +310,7 @@ const miniMap = new MiniMap(miniMapElement, scene, camera);
 
 const tick = () => {
   //console.log("tick");
-  stats.begin();
+  // stats.begin();
   controls.update();
 
   const time = performance.now() / 1000; // seconds
@@ -382,7 +382,7 @@ const tick = () => {
   // Update the mini-map with the main camera's position
   miniMap.update(camera);
   renderer.render(scene, camera);
-  stats.end();
+  // stats.end();
 
   window.requestAnimationFrame(tick);
 };

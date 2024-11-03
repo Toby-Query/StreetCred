@@ -59,6 +59,8 @@ export async function preRaceCountdown(duration, onComplete) {
     if (countdown > 0) {
       overlay.innerText = countdown;
     } else if (countdown === 0) {
+      //set color
+      overlay.style.color = "green";
       overlay.innerText = "GO!";
     } else {
       clearInterval(interval);

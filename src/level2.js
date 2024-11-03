@@ -7,7 +7,7 @@ import { setupLights } from "./setup/lights.js";
 import { loadCubeTextures, loadSkybox, loadSkybox2 } from "./setup/skybox.js";
 import { initPhysics } from "./setup/physics.js";
 import { setupFloor, createBox, createGoalBox } from "./buildWorld.js";
-import stats from "./setup/stats.js";
+//import stats from "./setup/stats.js";
 import Car from "./cars/car.js";
 import Car2 from "./cars/car2.js";
 import { FollowCamera } from "./setup/followCamera.js"; // Import FollowCamera
@@ -18,6 +18,7 @@ import {
   startCountdown,
   startMatch,
 } from "./gameScreenUI/timer.js";
+import { MiniMap } from "./setup/miniMap.js";
 
 // Canvas and Scene
 const canvas = document.querySelector("canvas.webgl");
@@ -50,6 +51,10 @@ setupLights(scene);
 
 // Environment Textures
 scene.environment = loadCubeTextures();
+
+// Create a mini-map
+const miniMapElement = document.getElementById("miniMap"); // Ensure you have a div with this ID in your HTML
+const miniMap = new MiniMap(miniMapElement, scene, camera);
 
 // Floor and Skybox
 setupFloor(scene, world);
@@ -274,9 +279,9 @@ createBox({
 
 // Goal Box
 const goalBox = createGoalBox({
-  size: [10, 10, 1],
-  color: 0x0000ff,
-  position: [0, 5, 650],
+  size: [10, 10, 10],
+  color: 0x00ff00,
+  position: [0, 5, 655],
   scene: scene,
   label: "GOAL",
 });
@@ -285,8 +290,8 @@ const goalBox = createGoalBox({
 const followCamera = new FollowCamera(camera);
 
 // Countdown
-const countdownElement = document.getElementById("countdown");
-startCountdown(20, countdownElement);
+// const countdownElement = document.getElementById("countdown");
+// startCountdown(20, countdownElement);
 
 // Check if car reaches goal
 function checkGoal(carPosition, goalBox) {
@@ -321,6 +326,14 @@ document.addEventListener("keydown", (event) => {
 });
 
 // Start Match
+//startMatch();
+
+const countdownElement = document.getElementById("countdown");
+// Call this function at the start to initiate countdown
+//preRaceCountdown(0, () => {
+// Start main race timer after countdown completes
+startCountdown(23, countdownElement);
+//});
 startMatch();
 
 // Set up win condition timer
@@ -332,7 +345,7 @@ const timeStep = 1 / 60;
 let lastCallTime;
 
 const tick = () => {
-  stats.begin();
+  //stats.begin();
   controls.update();
 
   const time = performance.now() / 1000;
@@ -370,8 +383,10 @@ const tick = () => {
     window.location.href = "../win.html";
   }
 
+  miniMap.update(carPosition, carQuaternion);
+
   renderer.render(scene, camera);
-  stats.end();
+  //stats.end();
 
   window.requestAnimationFrame(tick);
 };

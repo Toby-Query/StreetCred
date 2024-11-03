@@ -115,6 +115,13 @@ export default class Car {
       );
       this.chassis.castShadow = true; // Enable shadow casting
       this.chassis.receiveShadow = true; // Enable shadow receiving
+      gltf.scene.traverse((node) => {
+        if (node.isMesh) {
+          node.castShadow = true;
+          node.receiveShadow = true;
+        }
+      });
+
       this.scene.add(this.chassis);
     });
 
@@ -122,6 +129,13 @@ export default class Car {
     for (let i = 0; i < 4; i++) {
       gltfLoader.load(details[index].wheel_path, (gltf) => {
         const model = gltf.scene;
+        gltf.scene.traverse((node) => {
+          if (node.isMesh) {
+            node.castShadow = true;
+            node.receiveShadow = true;
+          }
+        });
+
         model.scale.set(
           details[index].game_scale[0] * details[index].wheel_scale,
           details[index].game_scale[1] * details[index].wheel_scale,
