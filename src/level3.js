@@ -176,7 +176,7 @@ const countdownElement = document.getElementById("countdown");
 // Call this function at the start to initiate countdown
 preRaceCountdown(5, () => {
   // Start main race timer after countdown completes
-  startCountdown(120, countdownElement);
+  startCountdown(120, countdownElement, 4);
 });
 
 // Create a mini-map

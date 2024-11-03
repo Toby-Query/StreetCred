@@ -218,20 +218,27 @@ const movingObstacles = [
 // Set up collision detection
 let hasCollided = false;
 
-function setupCollisionDetection(car, staticObstacles, movingObstacles) {
+function setupCollisionDetection(
+  car,
+  staticObstacles,
+  movingObstacles,
+  boundaryWalls
+) {
   car.car.chassisBody.addEventListener("collide", (event) => {
-    staticObstacles.concat(movingObstacles).forEach((obstacle) => {
-      if (event.body === obstacle.body) {
-        hasCollided = true;
-        console.log("Collision detected with obstacle! Game Over.");
-        window.location.href = "../lose.html";
-      }
-    });
+    staticObstacles
+      .concat(movingObstacles, boundaryWalls)
+      .forEach((obstacle) => {
+        if (event.body === obstacle.body) {
+          hasCollided = true;
+          console.log("Collision detected with obstacle! Game Over.");
+          window.location.href = "../lose.html";
+        }
+      });
   });
 }
 
 // Call collision detection setup with both static and moving obstacles
-setupCollisionDetection(car, obstacles, movingObstacles);
+//setupCollisionDetection(car, obstacles, movingObstacles);
 
 // Boundary Walls// Current boundary walls
 // Boundary Walls
@@ -244,16 +251,40 @@ createBox({
   position: [10, 5, 0], // Right side
   scene,
   world,
-});
-createBox({
-  size: [1, 50, 1500],
-  color: 0x32cd32,
-  texture: texture,
-  mass: 0,
-  position: [-10, 5, 0], // Left side
-  scene,
-  world,
-});
+}),
+  createBox({
+    size: [1, 50, 1500],
+    color: 0x32cd32,
+    texture: texture,
+    mass: 0,
+    position: [-10, 5, 0], // Left side
+    scene,
+    world,
+  });
+
+let boundaryWalls = [
+  createBox({
+    size: [1, 50, 1500], // Thickness, height, length
+    color: 0x32cd32,
+    texture: texture,
+    mass: 0,
+    position: [10, 5, 0], // Right side
+    scene,
+    world,
+  }),
+  createBox({
+    size: [1, 50, 1500],
+    color: 0x32cd32,
+    texture: texture,
+    mass: 0,
+    position: [-10, 5, 0], // Left side
+    scene,
+    world,
+  }),
+];
+
+// Call collision detection setup with both static and moving obstacles
+setupCollisionDetection(car, obstacles, movingObstacles, boundaryWalls);
 
 // New Front and Back Walls to Close the Road
 createBox({
@@ -332,7 +363,7 @@ const countdownElement = document.getElementById("countdown");
 // Call this function at the start to initiate countdown
 //preRaceCountdown(0, () => {
 // Start main race timer after countdown completes
-startCountdown(23, countdownElement);
+startCountdown(23, countdownElement, 3);
 //});
 startMatch();
 
@@ -343,6 +374,18 @@ const winConditionTime = 30 * 1000; // 1 minute 30 seconds in milliseconds
 // Animation Loop with Win Condition Check
 const timeStep = 1 / 60;
 let lastCallTime;
+
+// car.car.chassisBody.addEventListener("collide", (event) => {
+//   if (!hasCollided) {
+//     staticObstacles.concat(movingObstacles).forEach((obstacle) => {
+//       if (event.body === obstacle.body) {
+//         hasCollided = true;
+//         console.log("Collision detected with obstacle! Game Over.");
+//         window.location.href = "../lose.html";
+//       }
+//     });
+//   }
+// });
 
 const tick = () => {
   //stats.begin();
@@ -377,11 +420,11 @@ const tick = () => {
   if (!isEditMode) followCamera.update(carPosition, carQuaternion);
 
   // Check for win condition
-  const elapsedTime = Date.now() - startTime;
-  if (!hasCollided && elapsedTime > winConditionTime) {
-    console.log("Player has won! Time exceeded without collision.");
-    window.location.href = "../win.html";
-  }
+  //const elapsedTime = Date.now() - startTime;
+  // if (!hasCollided && elapsedTime > winConditionTime) {
+  //   console.log("Player has won! Time exceeded without collision.");
+  //   window.location.href = "../win.html";
+  // }
 
   miniMap.update(carPosition, carQuaternion);
 

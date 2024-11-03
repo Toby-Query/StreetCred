@@ -8,7 +8,7 @@ export function startMatch() {
   matchStarted = true;
 }
 
-export function startCountdown(seconds, displayElement) {
+export function startCountdown(seconds, displayElement, num = 5) {
   let timeLeft = seconds;
 
   // Function to update the countdown display and color
@@ -28,7 +28,9 @@ export function startCountdown(seconds, displayElement) {
       timeLeft--;
       setTimeout(updateDisplay, 1000);
     } else {
-      window.location.href = "../houndsHtml/lose5.html";
+      //list of lose
+      let list = ["lose1", "lose2", "lose3", "lose4", "lose5"];
+      window.location.href = `../houndsHtml/${list[num - 1]}.html`;
       setTimeout(() => (displayElement.textContent = ""), 1000);
     }
   }
