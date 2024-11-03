@@ -42,12 +42,65 @@
           bottom: 100%;
         }
       }
+
+      .cast {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: row;
+        gap: 50px;
+      }
+
+      .left {
+        text-align: end;
+        flex: 1;
+        margin: 0;
+        font-weight: 600;
+      }
+
+      .right {
+        text-align: start;
+        flex: 1;
+        margin: 0;
+      }
+
+      .para {
+        text-align: start;
+      }
     </style>
   </head>
   <body>
     <div class="credits-container">
       <div class="credits">
-        <h1>Movie Title</h1>
+        <h3>Story By</h3>
+        <p><strong>Muthuphei Mukhunyeledzi</strong></p>
+
+        <h3>Cast</h3>
+        <div class="cast">
+          <p class="left">Ndou Mukhathutsheli</p>
+          <p class="right">Charles</p>
+        </div>
+        <div class="cast">
+          <p class="left">Massamba Maphalala</p>
+          <p class="right">Massamba</p>
+        </div>
+
+        <div id="letter">
+          <p class="para">Mr Williams,</p>
+          <p class="para">
+            The hit on Austin Daniels was clean. The boss was very much
+            impressed with your work. <br />
+            We've got a new target for you. Another politician-Jacob Zuma.
+          </p>
+          <p class="para">
+            Remember, you stay dead. If you so much as try to contact anyone,
+            Dax won't live to see another day.
+          </p>
+          <p class="para">
+            Yours sincerely, <br />
+            The System
+          </p>
+        </div>
         <p>Directed by: Jane Doe</p>
         <p>Produced by: John Smith</p>
         <p>Starring: Alex Johnson</p>
