@@ -21,6 +21,7 @@ import * as CANNON from "cannon-es";
 import { drawSpeedo } from "./gameScreenUI/speedometer.js";
 import { startCountdown, startMatch } from "./gameScreenUI/timer.js";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
+import { MiniMap } from "./setup/miniMap.js";
 
 // Canvas and Scene
 const canvas = document.querySelector("canvas.webgl");
@@ -280,6 +281,10 @@ const goalBox = createGoalBox({
   label: "GOAL",
 });
 
+// Create a mini-map
+const miniMapElement = document.getElementById("miniMap"); // Ensure you have a div with this ID in your HTML
+const miniMap = new MiniMap(miniMapElement, scene, camera);
+
 function checkGoal(carPosition, goalBox) {
   const { x, y, z } = carPosition;
   const halfX = goalBox.geometry.parameters.width / 2;
@@ -357,6 +362,8 @@ const tick = () => {
   checkGoal(carPosition, goalBox);
 
   if (!isEditMode) followCamera.update(carPosition, carQuaternion);
+
+  miniMap.update(camera);
 
   renderer.render(scene, camera);
   stats.end();
