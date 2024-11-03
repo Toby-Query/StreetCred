@@ -124,13 +124,29 @@
       .audio {
         display: none;
       }
+
+      span{
+        color: green;
+      }
+      .absolute{
+        position: absolute;
+        top: 3%;
+        right: 3%;
+        z-index: 5;
+        color: white;
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
     </style>
   </head>
   <body>
+    <p class="absolute">Street Credits: <span>20,000</span> </p>
     <audio autoplay loop>
       <source src="/public/themesongs/nakamura.mp3" type="audio/mpeg" />
       Your browser does not support the audio element.
     </audio>
+
+   
 
     <!-- Left Section for Hound Info -->
     <div class="left">
