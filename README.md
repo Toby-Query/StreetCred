@@ -1,1 +1,1 @@
-<iframe width="1159" height="652" src="https://www.youtube.com/embed/gTsHUWjRZCs" title="STREET CRED GAME" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+[![YouTube](http://i.ytimg.com/vi/gTsHUWjRZCs/hqdefault.jpg)](https://www.youtube.com/watch?v=gTsHUWjRZCs)
