@@ -215,12 +215,12 @@ function checkGoal(obstacle) {
     // Remove the scored obstacle from the scene and world
     scene.remove(obstacle.mesh);
     world.removeBody(obstacle.body);
-
+    window.location.href = "../houndsHtml/letter4.html";
     // Check if all balls have been scored
     if (scoredObstaclesCount >= maxScore) {
       console.log("Game Over! You scored all the balls!");
       // Implement any game over logic here, like stopping the game loop
-      window.location.href = "../goal.html";
+      window.location.href = "../houndsHtml/letter4.html";
       // You could also add UI elements to display the game over screen
     } else {
       // Reset ball position if not all scored

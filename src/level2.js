@@ -340,7 +340,7 @@ function checkGoal(carPosition, goalBox) {
     z < goalBox.position.z + halfZ
   ) {
     console.log("Goal reached! Race is over.");
-    window.location.href = "../win.html";
+    window.location.href = "../houndsHtml/letter3.html";
   }
 }
 

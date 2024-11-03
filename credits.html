@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rolling Credits</title>
+    <style>
+      /* Basic styling for the page */
+      body {
+        margin: 0;
+        background-color: black;
+        color: white;
+        font-family: Arial, sans-serif;
+        overflow: hidden;
+      }
+
+      /* Container for the credits */
+      .credits-container {
+        position: relative;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+      }
+
+      /* Credits text styling */
+      .credits {
+        position: absolute;
+        bottom: -100%; /* Start out of view at the bottom */
+        animation: rollUp 60s linear infinite; /* Increase duration for longer credits */
+        font-size: 1.5rem;
+        text-align: center;
+      }
+
+      /* Animation for rolling the credits */
+      @keyframes rollUp {
+        0% {
+          bottom: -100%;
+        }
+        100% {
+          bottom: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="credits-container">
+      <div class="credits">
+        <h1>Movie Title</h1>
+        <p>Directed by: Jane Doe</p>
+        <p>Produced by: John Smith</p>
+        <p>Starring: Alex Johnson</p>
+        <p>Music by: Alice Brown</p>
+        <p>Special Effects: James Green</p>
+        <p>Written by: Sara White</p>
+        <p>Costume Design: Mike Black</p>
+        <p>Cinematography by: Lisa Gray</p>
+        <p>Lighting by: Paul Red</p>
+        <p>Editing by: Carl Blue</p>
+        <p>Assistant Director: Mary Gold</p>
+        <p>Sound Design by: Lily Silver</p>
+        <p>Makeup Artist: Rachel Purple</p>
+        <p>Hair Stylist: Ana Orange</p>
+        <p>Set Designer: Tim Cyan</p>
+        <p>Location Manager: Beth Maroon</p>
+        <p>Production Assistant: Eve Teal</p>
+        <p>Visual Effects Supervisor: Kyle Indigo</p>
+        <p>Special Thanks to: The Local Community</p>
+        <p>...and many more!</p>
+        <p>Thank you for watching!</p>
+        <!-- Add as many additional credits as needed -->
+      </div>
+    </div>
+  </body>
+</html>
