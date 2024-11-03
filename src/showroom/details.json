@@ -35,7 +35,7 @@
         "chassis_path":"/cars/bmw_m6_gran_coupe/chassis.gltf",
         "wheel_path":"/cars/bmw_m6_gran_coupe/wheel.gltf",
         "wheel_orientation":[-1,1,-1,1],
-        "game_wheels":[[-0.68,0.2,1.2],[0.68,0.2,1.2],[-0.68,0.2,-1.45],[0.68,0.2,-1.45]],
+        "game_wheels":[[-0.68,0.2,-1.45],[0.68,0.2,-1.45],[-0.68,0.2,1.2],[0.68,0.2,1.2]],
         "wheel_positions":[[-0.56,0.27,0.98],[0.56,0.27,0.98],[-0.56,0.27,-1.19],[0.56,0.27,-1.19]]
     },
     {
