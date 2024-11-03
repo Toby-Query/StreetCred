@@ -51,7 +51,7 @@ let isBoosting = false;
 let boostCooldown = false;
 let countdown = 3; // Countdown time in seconds
 let score = 0;
-const maxScore = 5; // Number of balls to score in goal area to win
+const maxScore = 3; // Number of balls to score in goal area to win
 //const countdownElement = document.getElementById("countdown");
 
 // Texture loader for realistic textures
