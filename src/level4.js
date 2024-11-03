@@ -72,6 +72,18 @@ loader.load(
     // Adjust model settings if needed (position, scale, rotation)
     gltf.scene.position.set(0, 0, 400); // Set position
     gltf.scene.scale.set(5, 5, 5); // Scale the model
+
+    //cast and receive shadows
+    gltf.scene.castShadow = true;
+    gltf.scene.receiveShadow = true;
+
+    gltf.scene.traverse((node) => {
+      if (node.isMesh) {
+        node.castShadow = true;
+        node.receiveShadow = true;
+      }
+    });
+
     scene.add(gltf.scene); // Add the model to the scene
 
     // Optional: Log to check model's structure or debug
@@ -254,6 +266,8 @@ let lastCallTime;
 const countdownElement = document.getElementById("countdown");
 //startCountdown(50, countdownElement);
 startMatch();
+
+setupLights(scene);
 
 loadWrathbox(scene);
 
