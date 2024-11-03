@@ -204,7 +204,7 @@ const box13 = createBox({
 // Create the goal box
 const goalBox = createGoalBox({
   size: [13, 6, 10],
-  color: 0x0000ff,
+  color: 0x00ff00,
   position: [370, 3, 5],
   scene: scene,
   label: "GOAL",
