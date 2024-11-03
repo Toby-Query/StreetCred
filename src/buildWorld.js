@@ -243,3 +243,45 @@ function addPhysicsWireframe(cannonShape, color) {
 
   return wireframe;
 }
+
+export function setupDryFloor(scene, world) {
+  //width and height
+  const width = 800;
+  const height = 800;
+
+  const textureLoader = new THREE.TextureLoader();
+  const texture = textureLoader.load(
+    "/textures/dryfloor/mud_cracked_dry_riverbed_002_diff_4k.jpg"
+  );
+  // Set the texture's repeat properties
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(25, 25); // Apply texture scaling
+
+  const floorGeo = new THREE.PlaneGeometry(width, height);
+  const floorMesh = new THREE.Mesh(
+    floorGeo,
+    new THREE.MeshStandardMaterial({
+      //color: 0xffffff,
+      roughness: 0.5,
+      metalness: 0,
+      map: texture,
+    })
+  );
+  floorMesh.rotation.x = -Math.PI * 0.5;
+  //set position
+  floorMesh.position.z = height / 2;
+
+  floorMesh.receiveShadow = true;
+
+  scene.add(floorMesh);
+
+  const floorShape = new CANNON.Plane();
+  const floorBody = new CANNON.Body({ mass: 0 });
+  floorBody.addShape(floorShape);
+  floorBody.quaternion.setFromAxisAngle(
+    new CANNON.Vec3(-1, 0, 0),
+    Math.PI * 0.5
+  );
+  world.addBody(floorBody);
+}

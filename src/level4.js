@@ -11,6 +11,7 @@ import {
   createBox,
   createRamp,
   createGoalBox,
+  setupDryFloor,
 } from "./buildWorld.js";
 import stats from "./setup/stats.js";
 import Car from "./cars/car.js";
@@ -59,7 +60,7 @@ setupLights(scene);
 scene.environment = loadCubeTextures();
 
 // Floor
-setupFloor(scene, world);
+setupDryFloor(scene, world);
 
 // Initialize the GLTF loader
 const loader = new GLTFLoader();
@@ -84,6 +85,46 @@ loader.load(
   }
 );
 
+//load texture
+const textureLoader = new THREE.TextureLoader();
+const texture = textureLoader.load(
+  "public/textures/ground/concrete_floor_painted_diff_4k.jpg"
+);
+
+// Set the texture's repeat properties
+texture.wrapS = THREE.RepeatWrapping;
+texture.wrapT = THREE.RepeatWrapping;
+texture.repeat.set(1, 35);
+// Apply texture scaling
+const texture1 = textureLoader.load(
+  "public/textures/ground/concrete_floor_painted_diff_4k.jpg"
+);
+//rotate texture
+texture1.rotation = Math.PI / 2;
+
+// Set the texture's repeat properties
+texture1.wrapS = THREE.RepeatWrapping;
+texture1.wrapT = THREE.RepeatWrapping;
+texture1.repeat.set(1, 35); // Apply texture scaling
+
+const texture4 = textureLoader.load(
+  "public/textures/ground/concrete_floor_painted_diff_4k.jpg"
+);
+
+// Set the texture's repeat properties
+texture4.wrapS = THREE.RepeatWrapping;
+texture4.wrapT = THREE.RepeatWrapping;
+texture4.repeat.set(10, 35);
+
+const texture5 = textureLoader.load(
+  "public/textures/ground/concrete_floor_painted_diff_4k.jpg"
+);
+
+// Set the texture's repeat properties
+texture5.wrapS = THREE.RepeatWrapping;
+texture5.wrapT = THREE.RepeatWrapping;
+texture5.repeat.set(35, 10);
+
 const box3 = createBox({
   size: [50, 100, 200],
   color: 0x00ff00,
@@ -91,6 +132,7 @@ const box3 = createBox({
   position: [-375, 3, 105],
   scene: scene,
   world: world,
+  texture: texture4,
 });
 const box4 = createBox({
   size: [3, 2, 390],
@@ -99,6 +141,7 @@ const box4 = createBox({
   position: [-375, 52, 400],
   scene: scene,
   world: world,
+  texture: texture,
 });
 const box5 = createBox({
   size: [50, 100, 200],
@@ -107,7 +150,10 @@ const box5 = createBox({
   position: [-375, 3, 800 - 105],
   scene: scene,
   world: world,
+  texture: texture4,
 });
+
+// texture.repeat.set(1, 35); // Apply texture scaling
 
 const box6 = createBox({
   size: [300, 2, 3],
@@ -116,6 +162,7 @@ const box6 = createBox({
   position: [-185, 50, 700],
   scene: scene,
   world: world,
+  texture: texture1,
 });
 
 // Create a moving platform
@@ -126,6 +173,7 @@ const blueBox = createBox({
   position: [0, 47, 700], // Initial position
   scene: scene,
   world: world,
+  texture: texture4,
 });
 
 const box7 = createBox({
@@ -135,6 +183,7 @@ const box7 = createBox({
   position: [90, 3, 625],
   scene: scene,
   world: world,
+  texture: texture5,
 });
 
 // const box8 = createBox({
@@ -146,6 +195,17 @@ const box7 = createBox({
 //   world: world,
 // });
 
+//load texture
+//const textureLoader = new THREE.TextureLoader();
+const texture2 = textureLoader.load(
+  "public/textures/wall/rustic_stone_wall_diff_4k.jpg"
+);
+
+// Set the texture's repeat properties
+texture2.wrapS = THREE.RepeatWrapping;
+texture2.wrapT = THREE.RepeatWrapping;
+texture2.repeat.set(20, 20); // Apply texture scaling
+
 const box9 = createBox({
   size: [2, 50, 50],
   color: 0xf0f00f,
@@ -153,6 +213,7 @@ const box9 = createBox({
   position: [12, 50, 622],
   scene: scene,
   world: world,
+  texture: texture2,
 });
 
 const box10 = createBox({
@@ -162,6 +223,7 @@ const box10 = createBox({
   position: [22, 50, 600],
   scene: scene,
   world: world,
+  texture: texture2,
 });
 
 const box11 = createBox({
@@ -171,6 +233,7 @@ const box11 = createBox({
   position: [22, 50, 655],
   scene: scene,
   world: world,
+  texture: texture2,
 });
 
 // const initialY = movingBox.mesh.position.y; // Store initial Y position
@@ -197,7 +260,7 @@ loadWrathbox(scene);
 // Create the goal box
 const goalBox = createGoalBox({
   size: [13, 6, 10],
-  color: 0x0000ff,
+  color: 0x00ff00,
   position: [300, 30, 625],
   scene: scene,
   label: "GOAL",
