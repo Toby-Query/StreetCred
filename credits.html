@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Rolling Credits</title>
     <style>
-      /* Basic styling for the page */
       body {
         margin: 0;
         background-color: black;
@@ -14,32 +13,28 @@
         overflow: hidden;
       }
 
-      /* Container for the credits */
       .credits-container {
-        position: relative;
+        position: fixed;
+        width: 100%;
         height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
         overflow: hidden;
       }
 
-      /* Credits text styling */
       .credits {
         position: absolute;
-        bottom: -100%; /* Start out of view at the bottom */
-        animation: rollUp 60s linear infinite; /* Increase duration for longer credits */
+        width: 100%;
+        transform: translateY(100vh);
+        animation: rollUp 60s linear infinite;
         font-size: 1.5rem;
         text-align: center;
       }
 
-      /* Animation for rolling the credits */
       @keyframes rollUp {
-        0% {
-          bottom: -100%;
+        from {
+          transform: translateY(100vh);
         }
-        100% {
-          bottom: 100%;
+        to {
+          transform: translateY(-100%);
         }
       }
 
@@ -66,10 +61,20 @@
 
       .para {
         text-align: start;
+        padding-left: 15%;
+        padding-right: 15%;
+      }
+
+      .nomargin {
+        margin: 0;
       }
     </style>
   </head>
   <body>
+    <audio autoplay loop>
+      <source src="/public/themesongs/nakamura.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
     <div class="credits-container">
       <div class="credits">
         <h3>Story By</h3>
@@ -84,6 +89,30 @@
           <p class="left">Massamba Maphalala</p>
           <p class="right">Massamba</p>
         </div>
+        <div class="cast">
+          <p class="left">Madima Bono</p>
+          <p class="right">Raya</p>
+        </div>
+        <div class="cast">
+          <p class="left">Omolemo Rampele</p>
+          <p class="right">Angelica</p>
+        </div>
+
+        <h3>Meet the team</h3>
+
+        <p class="nomargin">Massamba Maphalala</p>
+        <p class="nomargin">Siphelele Mthethwa</p>
+        <p class="nomargin">Muthuphei Mukhunyeledzi</p>
+        <p class="nomargin">Kananelo Rampele</p>
+        <p class="nomargin">Ndou Mukhathutsheli Charles</p>
+        <p class="nomargin">Mbedzi Ritanzwe</p>
+
+        <h3>Special thanks to</h3>
+        <p class="nomargin">Omolemo Rampele</p>
+        <p class="nomargin">Madima Bono</p>
+        <p class="nomargin">Rasikhinya Zwavhudi</p>
+        <p class="nomargin">Netshivhera Dzanga Precious</p>
+        <p class="nomargin">Ravele Tendani</p>
 
         <div id="letter">
           <p class="para">Mr Williams,</p>
@@ -101,28 +130,6 @@
             The System
           </p>
         </div>
-        <p>Directed by: Jane Doe</p>
-        <p>Produced by: John Smith</p>
-        <p>Starring: Alex Johnson</p>
-        <p>Music by: Alice Brown</p>
-        <p>Special Effects: James Green</p>
-        <p>Written by: Sara White</p>
-        <p>Costume Design: Mike Black</p>
-        <p>Cinematography by: Lisa Gray</p>
-        <p>Lighting by: Paul Red</p>
-        <p>Editing by: Carl Blue</p>
-        <p>Assistant Director: Mary Gold</p>
-        <p>Sound Design by: Lily Silver</p>
-        <p>Makeup Artist: Rachel Purple</p>
-        <p>Hair Stylist: Ana Orange</p>
-        <p>Set Designer: Tim Cyan</p>
-        <p>Location Manager: Beth Maroon</p>
-        <p>Production Assistant: Eve Teal</p>
-        <p>Visual Effects Supervisor: Kyle Indigo</p>
-        <p>Special Thanks to: The Local Community</p>
-        <p>...and many more!</p>
-        <p>Thank you for watching!</p>
-        <!-- Add as many additional credits as needed -->
       </div>
     </div>
   </body>
