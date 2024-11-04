@@ -1,8 +1,6 @@
 [![YouTube](http://i.ytimg.com/vi/gTsHUWjRZCs/hqdefault.jpg)](https://youtu.be/aD4txBszyos?si=O8xHM3LqH4xWT_tP)
 
-https://github.com/user-attachments/assets/88b3b0c4-4ce1-495c-85ff-11b0421a9859
-
-for higher resolution go to: 
+https://github.com/user-attachments/assets/88b3b0c4-4ce1-495c-85ff-11b0421a9859 
 
 # Street Cred
 
@@ -19,6 +17,6 @@ This is a group project for the Computer Graphics module. We, the following stud
 
   ## Website
 
-You can access our game at: [Street Cred](https://playcryptidweb.azurewebsites.net)
+You can access our game at: [Street Cred](https://lamp.ms.wits.ac.za/home/seldenringconquerors/)
 
 If any error occurs go to : http://lamp.ms.wits.ac.za/home/seldenringconquerors/index1.html
