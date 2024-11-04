@@ -19,4 +19,4 @@ This is a group project for the Computer Graphics module. We, the following stud
 
 You can access our game at: [Street Cred](https://lamp.ms.wits.ac.za/home/seldenringconquerors/)
 
-If any error occurs go to : http://lamp.ms.wits.ac.za/home/seldenringconquerors/index1.html
+If any error occurs go to : http://lamp.ms.wits.ac.za/home/seldenringconquerors/
